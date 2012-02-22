@@ -1,2 +1,2 @@
 *.Resharper
-build/
+output/
