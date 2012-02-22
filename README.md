@@ -2,7 +2,9 @@
 ================
 
 trans·mog·ri·fy /transˈmägrəˌfī/
+
 Verb: Transform, esp. in a surprising or magical manner.
+
 Synonyms: transform - alter - change - transmute - metamorphose
 
 Description
