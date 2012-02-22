@@ -120,10 +120,20 @@
   <data name="CreateDatabase" xml:space="preserve">
     <value>CREATE DATABASE {0}</value>
   </data>
+  <data name="CreateSchemaVersionTable" xml:space="preserve">
+    <value>CREATE TABLE [dbo].[SchemaVersion] ( [Version] int NOT NULL PRIMARY KEY );
+INSERT INTO [dbo].[SchemaVersion] VALUES(0);</value>
+  </data>
   <data name="DatabaseExists" xml:space="preserve">
     <value>SELECT cast(count(*) as bit) FROM sys.databases WHERE [name] = @0</value>
   </data>
   <data name="DropDatabase" xml:space="preserve">
     <value>DROP DATABASE {0}</value>
+  </data>
+  <data name="DropSchemaVersionTable" xml:space="preserve">
+    <value>DROP TABLE [dbo].[SchemaVersion]</value>
+  </data>
+  <data name="SchemaVersionTableExists" xml:space="preserve">
+    <value>SELECT cast(count(*) as bit) FROM sys.tables WHERE [name] = 'SchemaVersion'</value>
   </data>
 </root>

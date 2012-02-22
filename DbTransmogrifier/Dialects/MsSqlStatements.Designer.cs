@@ -70,6 +70,16 @@ namespace DbTransmogrifier.Dialects {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to CREATE TABLE [dbo].[SchemaVersion] ( [Version] int NOT NULL PRIMARY KEY );
+        ///INSERT INTO [dbo].[SchemaVersion] VALUES(0);.
+        /// </summary>
+        internal static string CreateSchemaVersionTable {
+            get {
+                return ResourceManager.GetString("CreateSchemaVersionTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to SELECT cast(count(*) as bit) FROM sys.databases WHERE [name] = @0.
         /// </summary>
         internal static string DatabaseExists {
@@ -84,6 +94,24 @@ namespace DbTransmogrifier.Dialects {
         internal static string DropDatabase {
             get {
                 return ResourceManager.GetString("DropDatabase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DROP TABLE [dbo].[SchemaVersion].
+        /// </summary>
+        internal static string DropSchemaVersionTable {
+            get {
+                return ResourceManager.GetString("DropSchemaVersionTable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT cast(count(*) as bit) FROM sys.tables WHERE [name] = &apos;SchemaVersion&apos;.
+        /// </summary>
+        internal static string SchemaVersionTableExists {
+            get {
+                return ResourceManager.GetString("SchemaVersionTableExists", resourceCulture);
             }
         }
     }
