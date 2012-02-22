@@ -61,7 +61,7 @@ namespace DbTransmogrifier.Dialects {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CREATE DATABASE {0}.
+        ///   Looks up a localized string similar to CREATE DATABASE {0};.
         /// </summary>
         internal static string CreateDatabase {
             get {
@@ -70,8 +70,8 @@ namespace DbTransmogrifier.Dialects {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CREATE TABLE [dbo].[SchemaVersion] ( [Version] int NOT NULL PRIMARY KEY );
-        ///INSERT INTO [dbo].[SchemaVersion] VALUES(0);.
+        ///   Looks up a localized string similar to CREATE TABLE [SchemaVersion] ( [Version] int NOT NULL PRIMARY KEY );
+        ///INSERT INTO [SchemaVersion] VALUES(0);.
         /// </summary>
         internal static string CreateSchemaVersionTable {
             get {
@@ -80,7 +80,16 @@ namespace DbTransmogrifier.Dialects {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT cast(count(*) as bit) FROM sys.databases WHERE [name] = @0.
+        ///   Looks up a localized string similar to select max([Version]) from [SchemaVersion];.
+        /// </summary>
+        internal static string CurrentVersion {
+            get {
+                return ResourceManager.GetString("CurrentVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT cast(count(*) as bit) FROM sys.databases WHERE [name] = @0;.
         /// </summary>
         internal static string DatabaseExists {
             get {
@@ -89,7 +98,16 @@ namespace DbTransmogrifier.Dialects {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DROP DATABASE {0}.
+        ///   Looks up a localized string similar to DELETE FROM [SchemaVersion] WHERE [Version] = @0;.
+        /// </summary>
+        internal static string DeleteSchemaVersion {
+            get {
+                return ResourceManager.GetString("DeleteSchemaVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DROP DATABASE {0};.
         /// </summary>
         internal static string DropDatabase {
             get {
@@ -98,7 +116,7 @@ namespace DbTransmogrifier.Dialects {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DROP TABLE [dbo].[SchemaVersion].
+        ///   Looks up a localized string similar to DROP TABLE [SchemaVersion];.
         /// </summary>
         internal static string DropSchemaVersionTable {
             get {
@@ -107,7 +125,16 @@ namespace DbTransmogrifier.Dialects {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT cast(count(*) as bit) FROM sys.tables WHERE [name] = &apos;SchemaVersion&apos;.
+        ///   Looks up a localized string similar to INSERT INTO [SchemaVersion] VALUES (@0);.
+        /// </summary>
+        internal static string InsertSchemaVersion {
+            get {
+                return ResourceManager.GetString("InsertSchemaVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to SELECT cast(count(*) as bit) FROM sys.tables WHERE [name] = &apos;SchemaVersion&apos;;.
         /// </summary>
         internal static string SchemaVersionTableExists {
             get {

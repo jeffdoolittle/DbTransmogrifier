@@ -5,12 +5,10 @@
         static void Main(string[] args)
         {
             var transmogrifier = new Transmogrifier();
-            transmogrifier.TearDown();
-            transmogrifier.TearDown();
             transmogrifier.Init();
-            transmogrifier.Init();
+            transmogrifier.UpToLatest();
+            transmogrifier.DownTo(0);
             transmogrifier.TearDown();
-            transmogrifier.Init();
         }
     }
 }

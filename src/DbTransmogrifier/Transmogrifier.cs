@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using System.Data.Common;
+using System.Linq;
 using DbTransmogrifier.Config;
 using DbTransmogrifier.Dialects;
 using DbTransmogrifier.Logging;
@@ -9,6 +10,7 @@ namespace DbTransmogrifier
     public class Transmogrifier
     {
         private readonly IConfigurator _configurator;
+        private readonly IMigrationResolver _migrationResolver;
         private static readonly ILog Log = LoggerFactory.GetLoggerFor(typeof(Transmogrifier));
         private readonly string _providerName;
         private readonly ISqlDialect _dialect;
@@ -16,13 +18,14 @@ namespace DbTransmogrifier
         private readonly IConnectionFactory _connectionFactory;
 
         public Transmogrifier()
-            : this(new DefaultConfigurator(), null, null)
+            : this(new DefaultConfigurator(), new DefaultMigrationResolver(), null, null)
         {
         }
 
-        public Transmogrifier(IConfigurator configurator, ISqlDialect sqlDialect, IConnectionFactory connectionFactory)
+        public Transmogrifier(IConfigurator configurator, IMigrationResolver migrationResolver, ISqlDialect sqlDialect, IConnectionFactory connectionFactory)
         {
             _configurator = configurator;
+            _migrationResolver = migrationResolver;
             _providerName = configurator.ProviderName;
             Log.InfoFormat("Using {0} provider", _providerName);
             _dialect = sqlDialect ?? GetDialect(configurator.ProviderName, _configurator.TargetConnectionString);
@@ -46,6 +49,93 @@ namespace DbTransmogrifier
             }
 
             _dialect.ClearAllPools();
+        }
+
+        public void UpToLatest()
+        {
+            UpTo(int.MaxValue);
+        }
+
+        public void UpTo(int version)
+        {
+            using (var targetConnection = _connectionFactory.OpenTarget())
+            using (var transaction = targetConnection.BeginTransaction())
+            {
+                var currentVersion = GetCurrentVersion(targetConnection, transaction);
+                var migrations = _migrationResolver.GetMigrationsGreaterThan(currentVersion)
+                    .Where(x=>x.Version <= version);
+
+                foreach (var migration in migrations)
+                {
+                    foreach(var script in migration.Up)
+                    {
+                        var scriptCommand = targetConnection.CreateCommand();
+                        scriptCommand.Transaction = transaction;
+                        scriptCommand.CommandText = script;
+                        scriptCommand.ExecuteNonQuery();
+                    }
+
+                    var versionCommand = targetConnection.CreateCommand(_dialect.InsertSchemaVersion, migration.Version);
+                    versionCommand.Transaction = transaction;
+                    versionCommand.ExecuteNonQuery();
+
+                    Log.InfoFormat("Applied up migration {0} - {1}", migration.Version, migration.Name);
+                }
+
+                transaction.Commit();
+            }
+
+            _dialect.ClearAllPools();
+        }
+
+        public void DownTo(int version)
+        {
+            using (var targetConnection = _connectionFactory.OpenTarget())
+            using (var transaction = targetConnection.BeginTransaction())
+            {
+                var currentVersion = GetCurrentVersion(targetConnection, transaction);
+                var migrations = _migrationResolver.GetMigrationsLessThanOrEqualTo(currentVersion)
+                    .Where(x=>x.Version > version);
+
+                foreach (var migration in migrations)
+                {
+                    var versionCommand = targetConnection.CreateCommand(_dialect.DeleteSchemaVersion, migration.Version);
+                    versionCommand.Transaction = transaction;
+                    versionCommand.ExecuteNonQuery();
+
+                    foreach (var script in migration.Down)
+                    {
+                        var scriptCommand = targetConnection.CreateCommand();
+                        scriptCommand.Transaction = transaction;
+                        scriptCommand.CommandText = script;
+                        scriptCommand.ExecuteNonQuery();
+                    }
+
+                    Log.InfoFormat("Applied down migration {0} - {1}", migration.Version, migration.Name);
+                }
+
+                transaction.Commit();
+            }
+
+            _dialect.ClearAllPools();
+        }
+
+        public int CurrentVersion
+        {
+            get
+            {
+                using (var targetConnection = _connectionFactory.OpenTarget())
+                {
+                    return GetCurrentVersion(targetConnection);
+                }
+            }
+        }
+
+        private int GetCurrentVersion(IDbConnection connection, IDbTransaction transaction = null)
+        {
+            var command = connection.CreateCommand(_dialect.CurrentVersion);
+            if (transaction != null) command.Transaction = transaction;
+            return (int)command.ExecuteScalar();
         }
 
         public void TearDown()

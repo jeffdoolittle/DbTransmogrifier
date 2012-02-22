@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System;
+using System.Data.Common;
 using System.Data.SqlClient;
 
 namespace DbTransmogrifier.Dialects
@@ -17,6 +18,11 @@ namespace DbTransmogrifier.Dialects
         public void ClearAllPools()
         {
             SqlConnection.ClearAllPools();
+        }
+
+        public string CurrentVersion
+        {
+            get { return MsSqlStatements.CurrentVersion; }
         }
 
         public string DatabaseExists
@@ -47,6 +53,16 @@ namespace DbTransmogrifier.Dialects
         public string DropSchemaVersionTable
         {
             get { return MsSqlStatements.DropSchemaVersionTable; }
+        }
+
+        public string InsertSchemaVersion
+        {
+            get { return MsSqlStatements.InsertSchemaVersion; }
+        }
+
+        public string DeleteSchemaVersion
+        {
+            get { return MsSqlStatements.DeleteSchemaVersion; }
         }
     }
 }

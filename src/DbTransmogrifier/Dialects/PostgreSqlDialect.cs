@@ -14,6 +14,11 @@ namespace DbTransmogrifier.Dialects
             throw new NotImplementedException();
         }
 
+        public string CurrentVersion
+        {
+            get { throw new NotImplementedException(); }
+        }
+
         public string DatabaseExists
         {
             get { throw new NotImplementedException(); }
@@ -40,6 +45,16 @@ namespace DbTransmogrifier.Dialects
         }
 
         public string DropSchemaVersionTable
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public string InsertSchemaVersion
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public string DeleteSchemaVersion
         {
             get { throw new NotImplementedException(); }
         }

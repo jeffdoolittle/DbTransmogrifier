@@ -10,15 +10,16 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>DbTransmogrifier</RootNamespace>
     <AssemblyName>DbTransmogrifier</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\build\output\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -27,12 +28,13 @@
     <PlatformTarget>x86</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\build\output\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -43,6 +45,7 @@
     <Compile Include="ConnectionFactory.cs" />
     <Compile Include="DbConnectionExtensions.cs" />
     <Compile Include="Config\DefaultConfigurator.cs" />
+    <Compile Include="DefaultMigrationResolver.cs" />
     <Compile Include="Dialects\ISqlDialect.cs" />
     <Compile Include="Dialects\MsSqlStatements.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -50,11 +53,12 @@
       <DependentUpon>MsSqlStatements.resx</DependentUpon>
     </Compile>
     <Compile Include="Dialects\PostgreSqlDialect.cs" />
-    <Compile Include="ExtensionAttribute.cs" />
+    <Compile Include="IMigrationResolver.cs" />
     <Compile Include="Logging\DefaultLog.cs" />
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\LoggerFactory.cs" />
     <Compile Include="Dialects\MsSqlDialect.cs" />
+    <Compile Include="MigrationDescriptor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Transmogrifier.cs" />
