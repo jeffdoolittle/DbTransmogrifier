@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 using System.Data.Common;
 using System.Linq;
 using DbTransmogrifier.Config;
@@ -63,17 +64,11 @@ namespace DbTransmogrifier
             {
                 var currentVersion = GetCurrentVersion(targetConnection, transaction);
                 var migrations = _migrationResolver.GetMigrationsGreaterThan(currentVersion)
-                    .Where(x=>x.Version <= version);
+                    .Where(x => x.Version <= version);
 
                 foreach (var migration in migrations)
                 {
-                    foreach(var script in migration.Up)
-                    {
-                        var scriptCommand = targetConnection.CreateCommand();
-                        scriptCommand.Transaction = transaction;
-                        scriptCommand.CommandText = script;
-                        scriptCommand.ExecuteNonQuery();
-                    }
+                    foreach (var script in migration.Up) targetConnection.Execute(script, transaction);
 
                     var versionCommand = targetConnection.CreateCommand(_dialect.InsertSchemaVersion, migration.Version);
                     versionCommand.Transaction = transaction;
@@ -95,7 +90,7 @@ namespace DbTransmogrifier
             {
                 var currentVersion = GetCurrentVersion(targetConnection, transaction);
                 var migrations = _migrationResolver.GetMigrationsLessThanOrEqualTo(currentVersion)
-                    .Where(x=>x.Version > version);
+                    .Where(x => x.Version > version);
 
                 foreach (var migration in migrations)
                 {
@@ -103,13 +98,7 @@ namespace DbTransmogrifier
                     versionCommand.Transaction = transaction;
                     versionCommand.ExecuteNonQuery();
 
-                    foreach (var script in migration.Down)
-                    {
-                        var scriptCommand = targetConnection.CreateCommand();
-                        scriptCommand.Transaction = transaction;
-                        scriptCommand.CommandText = script;
-                        scriptCommand.ExecuteNonQuery();
-                    }
+                    foreach (var script in migration.Down) targetConnection.Execute(script, transaction);
 
                     Log.InfoFormat("Applied down migration {0} - {1}", migration.Version, migration.Name);
                 }
@@ -124,9 +113,17 @@ namespace DbTransmogrifier
         {
             get
             {
-                using (var targetConnection = _connectionFactory.OpenTarget())
+                try
                 {
-                    return GetCurrentVersion(targetConnection);
+                    using (var targetConnection = _connectionFactory.OpenTarget())
+                    {
+                        return GetCurrentVersion(targetConnection);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Log.Error(ex.Message);
+                    return -1;
                 }
             }
         }
@@ -154,7 +151,7 @@ namespace DbTransmogrifier
             {
                 Log.Info("Schema Version Table already exists.");
                 return;
-            } 
+            }
 
             using (var createCommand = targetConnection.CreateCommand(_dialect.CreateSchemaVersionTable))
             {

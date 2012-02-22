@@ -13,5 +13,10 @@ namespace DbTransmogrifier.Logging
         {
             Console.WriteLine("[INFO] - " + message, args);
         }
+
+        public void Error (string message)
+        {
+            Console.WriteLine("[ERROR] - " + message);
+        }
     }
 }

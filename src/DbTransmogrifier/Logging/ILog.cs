@@ -4,5 +4,6 @@
     {
         void Info(string message);
         void InfoFormat(string message, params object[] args);
+        void Error(string message);
     }
 }

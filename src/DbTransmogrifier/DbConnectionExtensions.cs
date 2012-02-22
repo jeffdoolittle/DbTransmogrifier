@@ -18,5 +18,14 @@ namespace DbTransmogrifier
                 }
             return command;
         }
+
+        public static void Execute(this IDbConnection connection, string script, IDbTransaction transaction = null)
+        {
+            using (var command = connection.CreateCommand(script))
+            {
+                command.Transaction = transaction;
+                command.ExecuteNonQuery();
+            }
+        }
     }
 }
