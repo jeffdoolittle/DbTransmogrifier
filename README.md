@@ -36,5 +36,7 @@ DbTransmogrifier looks for an **IMigration** interface with two methods each ret
 Possible Plans for the Future
 -----------------------------
 
+* Improve build process
 * Support other RDBMS's (Oracle, SQL CE, Firebird, MySql, Postgres, etc.)
 * Allow for alternative migration discovery conventions (file system based migrations, alternative assembly scanning options, etc.)
+* Create a NuGet installation package
