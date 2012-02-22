@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using System.Data.Common;
 
-namespace DbTransmogrifier
+namespace DbTransmogrifier.Database
 {
     public interface IConnectionFactory
     {

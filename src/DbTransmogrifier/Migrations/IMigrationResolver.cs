@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace DbTransmogrifier
+namespace DbTransmogrifier.Migrations
 {
     public interface IMigrationResolver
     {

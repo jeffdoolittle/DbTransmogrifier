@@ -7,7 +7,7 @@ namespace SampleMigrations
     {
         public IEnumerable<string> Up()
         {
-            yield return "CREATE TABLE FirstMigration (	Id int NOT NULL PRIMARY KEY	)";
+            yield return "CREATE TABLE FirstMigration ( Id int NOT NULL PRIMARY KEY )";
         }
 
         public IEnumerable<string> Down()

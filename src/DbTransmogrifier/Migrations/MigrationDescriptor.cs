@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace DbTransmogrifier
+namespace DbTransmogrifier.Migrations
 {
     public class MigrationDescriptor
     {

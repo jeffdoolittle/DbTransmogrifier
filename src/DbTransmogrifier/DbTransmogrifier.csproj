@@ -42,10 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config\IConfigurator.cs" />
-    <Compile Include="ConnectionFactory.cs" />
-    <Compile Include="DbConnectionExtensions.cs" />
+    <Compile Include="Database\ConnectionFactory.cs" />
+    <Compile Include="Database\DbConnectionExtensions.cs" />
     <Compile Include="Config\DefaultConfigurator.cs" />
-    <Compile Include="DefaultMigrationResolver.cs" />
+    <Compile Include="Migrations\DefaultMigrationResolver.cs" />
     <Compile Include="Dialects\ISqlDialect.cs" />
     <Compile Include="Dialects\MsSqlStatements.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -53,12 +53,12 @@
       <DependentUpon>MsSqlStatements.resx</DependentUpon>
     </Compile>
     <Compile Include="Dialects\PostgreSqlDialect.cs" />
-    <Compile Include="IMigrationResolver.cs" />
+    <Compile Include="Migrations\IMigrationResolver.cs" />
     <Compile Include="Logging\DefaultLog.cs" />
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\LoggerFactory.cs" />
     <Compile Include="Dialects\MsSqlDialect.cs" />
-    <Compile Include="MigrationDescriptor.cs" />
+    <Compile Include="Migrations\MigrationDescriptor.cs" />
     <Compile Include="Processor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

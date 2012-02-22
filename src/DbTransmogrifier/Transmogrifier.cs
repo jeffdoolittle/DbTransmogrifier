@@ -3,8 +3,10 @@ using System.Data;
 using System.Data.Common;
 using System.Linq;
 using DbTransmogrifier.Config;
+using DbTransmogrifier.Database;
 using DbTransmogrifier.Dialects;
 using DbTransmogrifier.Logging;
+using DbTransmogrifier.Migrations;
 
 namespace DbTransmogrifier
 {
@@ -66,6 +68,8 @@ namespace DbTransmogrifier
                 var migrations = _migrationResolver.GetMigrationsGreaterThan(currentVersion)
                     .Where(x => x.Version <= version);
 
+                if (migrations.Count() == 0) Log.Info("No migrations to apply. Database is current.");
+
                 foreach (var migration in migrations)
                 {
                     foreach (var script in migration.Up) targetConnection.Execute(script, transaction);
@@ -91,6 +95,8 @@ namespace DbTransmogrifier
                 var currentVersion = GetCurrentVersion(targetConnection, transaction);
                 var migrations = _migrationResolver.GetMigrationsLessThanOrEqualTo(currentVersion)
                     .Where(x => x.Version > version);
+
+                if (migrations.Count() == 0) Log.Info("No migrations to apply. Database is current.");
 
                 foreach (var migration in migrations)
                 {
