@@ -1,7 +1,7 @@
 ﻿DbTransmogrifier
 ================
 
-trans·mog·ri·fy /transˈmägrəˌfī/
+**trans·mog·ri·fy** */transˈmägrəˌfī/*
 
 Verb: Transform, esp. in a surprising or magical manner.
 
