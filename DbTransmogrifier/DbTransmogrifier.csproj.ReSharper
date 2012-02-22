@@ -1,0 +1,5 @@
+<Configuration>
+  <NamespaceFolders>
+    <SkipFolder>18FBFDB1-DE4A-4237-9B13-11DAEABBE8C8/d:Logging</SkipFolder>
+  </NamespaceFolders>
+</Configuration>

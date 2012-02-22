@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Data;
 using System.Data.Common;
+using DbTransmogrifier.Dialects;
 
 namespace DbTransmogrifier
 {
@@ -16,13 +17,17 @@ namespace DbTransmogrifier
     public class Transmogrifier
     {
         private static readonly ILog Log = LoggerFactory.GetLoggerFor(typeof (Transmogrifier));
+        private readonly string _providerName;
+        private readonly ISqlDialect _dialect;
 
         public Transmogrifier()
         {
-            var providerName = ConfigurationManager.AppSettings["ProviderInvariantName"] ?? "System.Data.SqlClient";
-            var providerFactory = DbProviderFactories.GetFactory(providerName);
+            _providerName = ConfigurationManager.AppSettings["ProviderInvariantName"] ?? "System.Data.SqlClient";
+            var providerFactory = DbProviderFactories.GetFactory(_providerName);
 
             Log.InfoFormat("Using {0} provider", providerFactory.GetType());
+
+            _dialect = GetDialect();
 
             var masterConnectionSettings = ConfigurationManager.ConnectionStrings["Master"];
             var targetConnectionSettings = ConfigurationManager.ConnectionStrings["Target"];
@@ -46,9 +51,9 @@ namespace DbTransmogrifier
         private void EnsureTargetDatabase(IDbConnection connection, string databaseName)
         {
             bool exists;
-            using(var command = connection.CreateCommand("SELECT count(*) FROM sys.databases WHERE [name] = @0", databaseName))
+            using(var command = connection.CreateCommand(_dialect.DatabaseExists, databaseName))
             {
-                exists = (int)command.ExecuteScalar() > 0;
+                exists = (bool)command.ExecuteScalar();
             }
 
             if (exists)
@@ -57,64 +62,24 @@ namespace DbTransmogrifier
                 return;
             }
 
-            using (var createCommand = connection.CreateCommand(string.Format("CREATE DATABASE [{0}]", databaseName)))
+            using (var createCommand = connection.CreateCommand(string.Format(_dialect.CreateDatabase, databaseName)))
             {
                 createCommand.ExecuteNonQuery();
                 Log.InfoFormat("Database {0} created.", databaseName);
             }
         }
-    }
 
-    public static class DbConnectionExtensions
-    {
-        public static IDbCommand CreateCommand(this IDbConnection connection, string commandText, params object[] parameters)
+        private ISqlDialect GetDialect()
         {
-            var command = connection.CreateCommand();
-            command.CommandText = commandText;
-            if (parameters != null && parameters.Length > 0)
-                for (int p = 0; p < parameters.Length; p++)
-                {
-                    var parameter = command.CreateParameter();
-                    parameter.ParameterName = "@" + p;
-                    parameter.Value = parameters[p];
-                    command.Parameters.Add(parameter);
-                }
-            return command;
+            if (_dialect != null)
+                return _dialect;
+
+            var providerName = _providerName.ToUpperInvariant();
+
+            if (providerName.Contains("POSTGRES"))
+                return new PostgreSqlDialect();
+
+            return new MsSqlDialect();
         }
-    }
-
-    public static class LoggerFactory
-    {
-        public static ILog GetLoggerFor(Type type)
-        {
-            return new DefaultLog();
-        }
-    }
-
-    public interface ILog
-    {
-        void Info(string message);
-        void InfoFormat(string message, params object[] args);
-    }
-
-    public class DefaultLog : ILog
-    {
-        public void Info(string message)
-        {
-            Console.WriteLine("[INFO] - " + message);
-        }
-
-        public void InfoFormat(string message, params object[] args)
-        {
-            Console.WriteLine(message, args);
-        }
-    }
-}
-
-namespace System.Runtime.CompilerServices
-{
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-    public class ExtensionAttribute : Attribute
-    {
     }
 }
