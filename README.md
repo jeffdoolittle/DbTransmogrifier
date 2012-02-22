@@ -26,13 +26,12 @@ Defining Migrations in Your Assembly
 
 ### Migration Attribute
 
-Create a "MigrationAttribute" class in your migration assembly.  This attribute should have a "version" integer property on it which DbTransmogrifier will use to determine the version of each migration.  See the SampleMigrations project for a detailed example.
+Create a **MigrationAttribute** class in your migration assembly.  This attribute should have a **Version** integer property on it which DbTransmogrifier will use to determine the version of each migration.  See the *SampleMigrations* project for a detailed example.
 
 
 ### IMigration Interface
 
-DbTransmogrifier looks for an IMigration interface with two methods each returning an IEnumerable<string>.  One method should be called "Up()" and the other "Down()".  See the SampleMigrations project for a detailed example.
-
+DbTransmogrifier looks for an **IMigration** interface with two methods each returning an IEnumerable<string>.  One method should be called *Up()* and the other *Down()*.  See the SampleMigrations project for a detailed example.
 
 Possible Plans for the Future
 -----------------------------
