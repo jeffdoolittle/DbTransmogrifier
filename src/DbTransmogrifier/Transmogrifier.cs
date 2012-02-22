@@ -1,7 +1,5 @@
-﻿using System;
-using System.Data;
+﻿using System.Data;
 using System.Data.Common;
-using System.Data.SqlClient;
 using DbTransmogrifier.Config;
 using DbTransmogrifier.Dialects;
 using DbTransmogrifier.Logging;
