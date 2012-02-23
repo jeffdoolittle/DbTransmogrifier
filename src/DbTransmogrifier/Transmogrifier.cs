@@ -13,7 +13,7 @@ namespace DbTransmogrifier
     public class Transmogrifier
     {
         private readonly IConfigurator _configurator;
-        private readonly IMigrationResolver _migrationResolver;
+        private readonly IMigrationFactory _migrationFactory;
         private static readonly ILog Log = LoggerFactory.GetLoggerFor(typeof(Transmogrifier));
         private readonly string _providerName;
         private readonly ISqlDialect _dialect;
@@ -21,14 +21,14 @@ namespace DbTransmogrifier
         private readonly IConnectionFactory _connectionFactory;
 
         public Transmogrifier()
-            : this(new DefaultConfigurator(), new DefaultMigrationResolver(), null, null)
+            : this(new DefaultConfigurator(), new DefaultMigrationFactory(), null, null)
         {
         }
 
-        public Transmogrifier(IConfigurator configurator, IMigrationResolver migrationResolver, ISqlDialect sqlDialect, IConnectionFactory connectionFactory)
+        public Transmogrifier(IConfigurator configurator, IMigrationFactory migrationFactory, ISqlDialect sqlDialect, IConnectionFactory connectionFactory)
         {
             _configurator = configurator;
-            _migrationResolver = migrationResolver;
+            _migrationFactory = migrationFactory;
             _providerName = configurator.ProviderName;
             Log.InfoFormat("Using {0} provider", _providerName);
             _dialect = sqlDialect ?? GetDialect(configurator.ProviderName, _configurator.TargetConnectionString);
@@ -74,7 +74,7 @@ namespace DbTransmogrifier
             using (var transaction = targetConnection.BeginTransaction())
             {
                 var currentVersion = GetCurrentVersion(targetConnection, transaction);
-                var migrations = _migrationResolver.GetMigrationsGreaterThan(currentVersion)
+                var migrations = _migrationFactory.GetMigrationsGreaterThan(currentVersion)
                     .Where(x => x.Version <= version);
 
                 if (migrations.Count() == 0) Log.Info("No migrations to apply. Database is current.");
@@ -111,7 +111,7 @@ namespace DbTransmogrifier
             using (var transaction = targetConnection.BeginTransaction())
             {
                 var currentVersion = GetCurrentVersion(targetConnection, transaction);
-                var migrations = _migrationResolver.GetMigrationsLessThanOrEqualTo(currentVersion)
+                var migrations = _migrationFactory.GetMigrationsLessThanOrEqualTo(currentVersion)
                     .Where(x => x.Version > version);
 
                 if (migrations.Count() == 0) Log.Info("No migrations to apply. Database is current.");

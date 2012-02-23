@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace DbTransmogrifier.Migrations
 {
     public interface IMigrationResolver
     {
-        IList<MigrationDescriptor> GetMigrationsGreaterThan(int version);
-        IList<MigrationDescriptor> GetMigrationsLessThanOrEqualTo(int version);
+        IDictionary<long, Type> GetMigrationsGreaterThan(long version);
+        IDictionary<long, Type> GetMigrationsLessThanOrEqualTo(long version);
     }
 }
