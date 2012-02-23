@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Bootstrapper.cs" />
     <Compile Include="Config\IConfigurator.cs" />
     <Compile Include="Database\ConnectionFactory.cs" />
     <Compile Include="Database\DbConnectionExtensions.cs" />
