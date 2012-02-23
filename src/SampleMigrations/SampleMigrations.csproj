@@ -40,6 +40,10 @@
     <Compile Include="001_FirstMigration.cs" />
     <Compile Include="IMigration.cs" />
     <Compile Include="MigrationAttribute.cs" />
+    <Compile Include="004_MigrationWithConnectionAndTransactionInConstructor.cs" />
+    <Compile Include="006_MigrationWithConnectionAndTransactionProperties.cs" />
+    <Compile Include="003_MigrationWithConnectionInConstructor.cs" />
+    <Compile Include="005_MigrationWithConnectionProperty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="002_SecondMigration.cs" />
   </ItemGroup>

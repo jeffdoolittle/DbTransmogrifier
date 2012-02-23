@@ -33,10 +33,17 @@ namespace DbTransmogrifier.Migrations
                 dynamic attribute = type.GetCustomAttributes(migrationAttributeType, true).SingleOrDefault();
                 int version = attribute.Version;
 
-                dynamic migration = Activator.CreateInstance(type);
+                var ctors = type.GetConstructors();
+                if (ctors.Count() == 1 && ctors[0].GetParameters().Count() == 0)
+                {
+                    dynamic migration = Activator.CreateInstance(type);
 
-                _migrationDescriptors.Add(version, 
-                                          new MigrationDescriptor(version, type.Name, migration.Up(), migration.Down()));
+                    _migrationDescriptors.Add(version, new MigrationDescriptor(version, type.Name, migration.Up(), migration.Down()));
+                }
+                else
+                {
+                    throw new NotImplementedException("unable to resolve migration with constructor args");
+                }
             }
         }
 
