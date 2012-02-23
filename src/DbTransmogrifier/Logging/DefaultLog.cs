@@ -17,7 +17,6 @@ namespace DbTransmogrifier.Logging
         public void Error (string message)
         {
             Console.WriteLine("[ERROR] - " + message);
-            Environment.ExitCode = (int)ExitCodes.Error;
         }
 
         public void ErrorFormat(string message, params object[] args)
@@ -28,14 +27,6 @@ namespace DbTransmogrifier.Logging
         public void Fault(Exception ex)
         {
             Console.WriteLine("[FAULT] - " + ex);
-            Environment.Exit((int)ExitCodes.Fault);
         }
-    }
-
-    public enum ExitCodes
-    {
-        Success = 0,
-        Error = 1,
-        Fault = 2 
     }
 }
