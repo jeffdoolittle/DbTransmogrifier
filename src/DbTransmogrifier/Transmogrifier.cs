@@ -61,6 +61,15 @@ namespace DbTransmogrifier
 
         public void UpTo(int version)
         {
+            using (var masterConnection = _connectionFactory.OpenMaster())
+            {
+                if (!DatabaseExists(masterConnection))
+                {
+                    Log.ErrorFormat("Database {0} does not exist.  You must initialize the database before applying migrations.", _targetDatabaseName);
+                    return;
+                }
+            }
+
             using (var targetConnection = _connectionFactory.OpenTarget())
             using (var transaction = targetConnection.BeginTransaction())
             {
@@ -89,6 +98,15 @@ namespace DbTransmogrifier
 
         public void DownTo(int version)
         {
+            using (var masterConnection = _connectionFactory.OpenMaster())
+            {
+                if (!DatabaseExists(masterConnection))
+                {
+                    Log.ErrorFormat("Database {0} does not exist.  You must initialize the database before applying migrations.", _targetDatabaseName);
+                    return;
+                }
+            }
+
             using (var targetConnection = _connectionFactory.OpenTarget())
             using (var transaction = targetConnection.BeginTransaction())
             {
