@@ -34,7 +34,14 @@ namespace DbTransmogrifier
 
         public void Process()
         {
-            Handlers.First(x => x.CanHandle(_args)).Handle(_args);
+            try
+            {
+                Handlers.First(x => x.CanHandle(_args)).Handle(_args);
+            }
+            catch (Exception ex)
+            {
+                Log.Fault(ex);
+            }
         }
 
         private static string HelpMessage()
