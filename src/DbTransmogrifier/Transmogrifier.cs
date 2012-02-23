@@ -12,7 +12,6 @@ namespace DbTransmogrifier
 {
     public class Transmogrifier
     {
-        private readonly IConfigurator _configurator;
         private readonly IMigrationFactory _migrationFactory;
         private static readonly ILog Log = LoggerFactory.GetLoggerFor(typeof(Transmogrifier));
         private readonly string _providerName;
@@ -27,13 +26,12 @@ namespace DbTransmogrifier
 
         public Transmogrifier(IConfigurator configurator, IMigrationFactory migrationFactory, ISqlDialect sqlDialect, IConnectionFactory connectionFactory)
         {
-            _configurator = configurator;
             _migrationFactory = migrationFactory;
             _providerName = configurator.ProviderName;
             Log.InfoFormat("Using {0} provider", _providerName);
-            _dialect = sqlDialect ?? GetDialect(configurator.ProviderName, _configurator.TargetConnectionString);
+            _dialect = sqlDialect ?? GetDialect(configurator.ProviderName, configurator.TargetConnectionString);
             Log.InfoFormat("Using {0} dialect", _dialect.GetType().Name);
-            _targetDatabaseName = _dialect.ExtractDatabaseName(_configurator.TargetConnectionString);
+            _targetDatabaseName = _dialect.ExtractDatabaseName(configurator.TargetConnectionString);
             Log.InfoFormat("Target Database: {0}", _targetDatabaseName);
             var providerFactory = DbProviderFactories.GetFactory(_providerName);
             _connectionFactory = connectionFactory ?? new ConnectionFactory(providerFactory, configurator.MasterConnectionString, configurator.TargetConnectionString);
@@ -61,14 +59,7 @@ namespace DbTransmogrifier
 
         public void UpTo(int version)
         {
-            using (var masterConnection = _connectionFactory.OpenMaster())
-            {
-                if (!DatabaseExists(masterConnection))
-                {
-                    Log.ErrorFormat("Database {0} does not exist.  You must initialize the database before applying migrations.", _targetDatabaseName);
-                    return;
-                }
-            }
+            if (CannotRunMigrations()) return;
 
             using (var targetConnection = _connectionFactory.OpenTarget())
             using (var transaction = targetConnection.BeginTransaction())
@@ -98,14 +89,7 @@ namespace DbTransmogrifier
 
         public void DownTo(int version)
         {
-            using (var masterConnection = _connectionFactory.OpenMaster())
-            {
-                if (!DatabaseExists(masterConnection))
-                {
-                    Log.ErrorFormat("Database {0} does not exist.  You must initialize the database before applying migrations.", _targetDatabaseName);
-                    return;
-                }
-            }
+            if (CannotRunMigrations()) return;
 
             using (var targetConnection = _connectionFactory.OpenTarget())
             using (var transaction = targetConnection.BeginTransaction())
@@ -118,11 +102,11 @@ namespace DbTransmogrifier
 
                 foreach (var migration in migrations)
                 {
+                    foreach (var script in migration.Down) targetConnection.Execute(script, transaction);
+
                     var versionCommand = targetConnection.CreateCommand(_dialect.DeleteSchemaVersion, migration.Version);
                     versionCommand.Transaction = transaction;
                     versionCommand.ExecuteNonQuery();
-
-                    foreach (var script in migration.Down) targetConnection.Execute(script, transaction);
 
                     Log.InfoFormat("Applied down migration {0} - {1}", migration.Version, migration.Name);
                 }
@@ -133,10 +117,25 @@ namespace DbTransmogrifier
             _dialect.ClearAllPools();
         }
 
+        private bool CannotRunMigrations()
+        {
+            using (var masterConnection = _connectionFactory.OpenMaster())
+            {
+                if (!DatabaseExists(masterConnection))
+                {
+                    Log.ErrorFormat("Database {0} does not exist.  You must initialize the database.", _targetDatabaseName);
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public int CurrentVersion
         {
             get
             {
+                if (CannotRunMigrations()) return -1;
+
                 try
                 {
                     using (var targetConnection = _connectionFactory.OpenTarget())
