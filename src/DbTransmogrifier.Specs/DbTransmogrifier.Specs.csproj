@@ -46,6 +46,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AutoMock.cs" />
     <Compile Include="Class1.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -56,6 +57,10 @@
     <ProjectReference Include="..\DbTransmogrifier\DbTransmogrifier.csproj">
       <Project>{18FBFDB1-DE4A-4237-9B13-11DAEABBE8C8}</Project>
       <Name>DbTransmogrifier</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SampleMigrations\SampleMigrations.csproj">
+      <Project>{7844313F-A470-4117-85C1-5EBF8F29BD80}</Project>
+      <Name>SampleMigrations</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
