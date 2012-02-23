@@ -35,8 +35,8 @@ namespace DbTransmogrifier
             Log.InfoFormat("Using {0} dialect", _dialect.GetType().Name);
             _targetDatabaseName = _dialect.ExtractDatabaseName(_configurator.TargetConnectionString);
             Log.InfoFormat("Target Database: {0}", _targetDatabaseName);
-            var providerFactory = DbProviderFactories.GetFactory(_providerName);
-            _connectionFactory = connectionFactory ?? new ConnectionFactory(providerFactory, configurator.MasterConnectionString, configurator.TargetConnectionString);
+            _connectionFactory = connectionFactory ?? 
+                new ConnectionFactory(DbProviderFactories.GetFactory(_providerName), configurator.MasterConnectionString, configurator.TargetConnectionString);
         }
 
         public void Init()
