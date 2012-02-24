@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace DbTransmogrifier.Migrations
+﻿namespace DbTransmogrifier.Migrations
 {
     public interface IMigrationBuilder
     {
-        IList<Migration> BuildMigrationsGreaterThan(long version);
-        IList<Migration> BuildMigrationsLessThanOrEqualTo(long version);
+        Migration BuildMigration(long version);
     }
 }
