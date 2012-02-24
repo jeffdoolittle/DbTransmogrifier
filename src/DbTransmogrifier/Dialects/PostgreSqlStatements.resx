@@ -118,31 +118,31 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CreateDatabase" xml:space="preserve">
-    <value>CREATE DATABASE {0};</value>
+    <value>CREATE DATABASE "{0}";</value>
   </data>
   <data name="CreateSchemaVersionTable" xml:space="preserve">
-    <value>CREATE TABLE [SchemaVersion] ( [Version] bigint NOT NULL PRIMARY KEY );
-INSERT INTO [SchemaVersion] VALUES(0);</value>
+    <value>CREATE TABLE "SchemaVersion" ("Version" bigint NOT NULL PRIMARY KEY);
+INSERT INTO "SchemaVersion" VALUES(0);</value>
   </data>
   <data name="CurrentVersion" xml:space="preserve">
-    <value>select max([Version]) from [SchemaVersion];</value>
+    <value>select max("Version") from "SchemaVersion";</value>
   </data>
   <data name="DatabaseExists" xml:space="preserve">
-    <value>SELECT cast(count(*) as bit) FROM sys.databases WHERE [name] = @0;</value>
+    <value>SELECT cast(count(*) as bit) FROM pg_database WHERE datname = @0;</value>
   </data>
   <data name="DeleteSchemaVersion" xml:space="preserve">
-    <value>DELETE FROM [SchemaVersion] WHERE [Version] = @0;</value>
+    <value>DELETE FROM "SchemaVersion" WHERE "Version" = @0;</value>
   </data>
   <data name="DropDatabase" xml:space="preserve">
-    <value>DROP DATABASE {0};</value>
+    <value>DROP DATABASE "{0}";</value>
   </data>
   <data name="DropSchemaVersionTable" xml:space="preserve">
-    <value>DROP TABLE [SchemaVersion];</value>
+    <value>DROP TABLE "SchemaVersion";</value>
   </data>
   <data name="InsertSchemaVersion" xml:space="preserve">
-    <value>INSERT INTO [SchemaVersion] VALUES (@0);</value>
+    <value>INSERT INTO "SchemaVersion" VALUES (@0);</value>
   </data>
   <data name="SchemaVersionTableExists" xml:space="preserve">
-    <value>SELECT cast(count(*) as bit) FROM sys.tables WHERE [name] = 'SchemaVersion';</value>
+    <value>SELECT cast(count(*) as bit) FROM information_schema.tables WHERE table_name = 'SchemaVersion';</value>
   </data>
 </root>
