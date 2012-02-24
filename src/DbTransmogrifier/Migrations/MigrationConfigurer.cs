@@ -10,7 +10,7 @@ namespace DbTransmogrifier.Migrations
 {
     public class MigrationConfigurer
     {
-        private static readonly ILog Log = LoggerFactory.GetLoggerFor(typeof (MigrationConfigurer));
+        private static readonly ILog Log = LoggerFactory.GetLoggerFor(typeof(MigrationConfigurer));
 
         public static Func<IDictionary<Type, object>, IMigrationBuilder> MigrationBuilderFactory;
         public static Func<IMigrationTypeSource> MigrationSourceFactory;
@@ -26,6 +26,23 @@ namespace DbTransmogrifier.Migrations
             MasterConnectionStringSource = () => ConfigurationManager.ConnectionStrings["Master"].ConnectionString;
             TargetConnectionStringSource = () => ConfigurationManager.ConnectionStrings["Target"].ConnectionString;
             return new MigrationConfigurer();
+        }
+
+        public static MigrationConfigurer Configure()
+        {
+            return new MigrationConfigurer();
+        }
+
+        public MigrationConfigurer WithDefaultMigrationBuilderFactory()
+        {
+            MigrationBuilderFactory = dependencies => new DefaultMigrationBuilder(dependencies, MigrationSourceFactory());
+            return this;
+        }
+
+        public MigrationConfigurer WithDefaultMigrationSourceFactory()
+        {
+            MigrationSourceFactory = () => new DefaultMigrationTypeSource();
+            return this;
         }
 
         public Transmogrifier BuildTransmogrifier()
