@@ -46,7 +46,7 @@
     <Compile Include="Database\ConnectionFactory.cs" />
     <Compile Include="Database\DbConnectionExtensions.cs" />
     <Compile Include="Config\DefaultConfigurator.cs" />
-    <Compile Include="Migrations\DefaultMigrationFactory.cs" />
+    <Compile Include="Migrations\DefaultMigrationBuilder.cs" />
     <Compile Include="Migrations\DefaultMigrationResolver.cs" />
     <Compile Include="Dialects\ISqlDialect.cs" />
     <Compile Include="Dialects\MsSqlStatements.Designer.cs">
@@ -55,13 +55,14 @@
       <DependentUpon>MsSqlStatements.resx</DependentUpon>
     </Compile>
     <Compile Include="Dialects\PostgreSqlDialect.cs" />
-    <Compile Include="Migrations\IMigrationFactory.cs" />
+    <Compile Include="Migrations\IMigrationBuilder.cs" />
     <Compile Include="Migrations\IMigrationResolver.cs" />
     <Compile Include="Logging\DefaultLog.cs" />
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\LoggerFactory.cs" />
     <Compile Include="Dialects\MsSqlDialect.cs" />
     <Compile Include="Migrations\Migration.cs" />
+    <Compile Include="Migrations\MigrationConfiguration.cs" />
     <Compile Include="Processor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

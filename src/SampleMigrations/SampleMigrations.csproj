@@ -38,6 +38,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="001_FirstMigration.cs" />
+    <Compile Include="003_MigrationWithConnectionInConstructor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="004_MigrationWithConnectionAndTransactionInConstructor.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="005_MigrationWithConnectionProperty.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="006_MigrationWithConnectionAndTransactionProperties.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="IMigration.cs" />
     <Compile Include="MigrationAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
