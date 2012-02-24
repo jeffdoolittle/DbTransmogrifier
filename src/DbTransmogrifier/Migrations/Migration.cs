@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 
 namespace DbTransmogrifier.Migrations
 {
@@ -9,13 +8,13 @@ namespace DbTransmogrifier.Migrations
         {
             Version = version;
             Name = name;
-            Up = up.ToList().AsReadOnly();
-            Down = down.ToList().AsReadOnly();
+            Up = up;
+            Down = down;
         }
 
         public long Version { get; private set; }
         public string Name { get; private set; }
-        public IList<string> Up { get; private set; }
-        public IList<string> Down { get; private set; }
+        public IEnumerable<string> Up { get; private set; }
+        public IEnumerable<string> Down { get; private set; }
     }
 }
