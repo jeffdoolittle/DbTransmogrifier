@@ -10,6 +10,6 @@ namespace SampleMigrations
         public IEnumerable<string> Down() { yield break; }
 
         public IDbConnection Connection { protected get; set; }
-        public IDbConnection Transaction { protected get; set; }
+        public IDbTransaction Transaction { protected get; set; }
     }
 }

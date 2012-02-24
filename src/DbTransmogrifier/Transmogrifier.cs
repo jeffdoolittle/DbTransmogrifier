@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
 using System.Linq;
@@ -9,10 +10,10 @@ using DbTransmogrifier.Logging;
 using DbTransmogrifier.Migrations;
 
 namespace DbTransmogrifier
-{
+{   
     public class Transmogrifier
     {
-        private readonly IMigrationFactory _migrationFactory;
+        private readonly IMigrationResolver _migrationResolver;
         private static readonly ILog Log = LoggerFactory.GetLoggerFor(typeof(Transmogrifier));
         private readonly string _providerName;
         private readonly ISqlDialect _dialect;
@@ -20,13 +21,13 @@ namespace DbTransmogrifier
         private readonly IConnectionFactory _connectionFactory;
 
         public Transmogrifier()
-            : this(new DefaultConfigurator(), new DefaultMigrationFactory(), null, null)
+            : this(new DefaultConfigurator(), new DefaultMigrationResolver(), null, null)
         {
         }
 
-        public Transmogrifier(IConfigurator configurator, IMigrationFactory migrationFactory, ISqlDialect sqlDialect, IConnectionFactory connectionFactory)
+        public Transmogrifier(IConfigurator configurator, IMigrationResolver migrationResolver, ISqlDialect sqlDialect, IConnectionFactory connectionFactory)
         {
-            _migrationFactory = migrationFactory;
+            _migrationResolver = migrationResolver;
             _providerName = configurator.ProviderName;
             Log.InfoFormat("Using {0} provider", _providerName);
             _dialect = sqlDialect ?? GetDialect(configurator.ProviderName, configurator.TargetConnectionString);
@@ -65,7 +66,15 @@ namespace DbTransmogrifier
             using (var targetConnection = _connectionFactory.OpenTarget())
             using (var transaction = targetConnection.BeginTransaction())
             {
-                var migrations = _migrationFactory.GetMigrationsGreaterThan(currentVersion)
+                var dependencies = new Dictionary<Type, object>
+                                       {
+                                           {typeof (IDbConnection), targetConnection},
+                                           {typeof (IDbTransaction), transaction}
+                                       };
+
+                var builder = MigrationConfiguration.MigrationBuilder(dependencies);
+
+                var migrations = builder.BuildMigrationsGreaterThan(currentVersion)
                     .Where(x => x.Version <= version);
 
                 if (migrations.Count() == 0) Log.Info("No migrations to apply. Database is current.");
@@ -95,7 +104,15 @@ namespace DbTransmogrifier
             using (var targetConnection = _connectionFactory.OpenTarget())
             using (var transaction = targetConnection.BeginTransaction())
             {
-                var migrations = _migrationFactory.GetMigrationsLessThanOrEqualTo(currentVersion)
+                var dependencies = new Dictionary<Type, object>
+                                       {
+                                           {typeof (IDbConnection), targetConnection},
+                                           {typeof (IDbTransaction), transaction}
+                                       };
+
+                var builder = MigrationConfiguration.MigrationBuilder(dependencies);
+
+                var migrations = builder.BuildMigrationsLessThanOrEqualTo(currentVersion)
                     .Where(x => x.Version > version);
 
                 if (migrations.Count() == 0) Log.Info("No migrations to apply. Database is current.");
