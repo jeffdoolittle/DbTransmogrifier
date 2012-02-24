@@ -41,6 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dialects\PostgreSqlStatements.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PostgreSqlStatements.resx</DependentUpon>
+    </Compile>
     <Compile Include="Logging\LogConfigurer.cs" />
     <Compile Include="Migrations\IMigrationConfiguration.cs" />
     <Compile Include="Migrations\MigrationConfigurer.cs" />
@@ -76,6 +81,10 @@
     <EmbeddedResource Include="Dialects\MsSqlStatements.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MsSqlStatements.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Dialects\PostgreSqlStatements.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>PostgreSqlStatements.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

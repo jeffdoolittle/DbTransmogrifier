@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Data.Common;
 
 namespace DbTransmogrifier.Dialects
 {
@@ -6,57 +6,60 @@ namespace DbTransmogrifier.Dialects
     {
         public string ExtractDatabaseName(string connectionString)
         {
-            throw new NotImplementedException();
+            var providerFactory = DbProviderFactories.GetFactory("Npgsql");
+            var builder = providerFactory.CreateConnectionStringBuilder();
+            builder.ConnectionString = connectionString;
+            var databaseName = builder["Database"] as string ?? "";
+            return databaseName;
         }
 
         public void ClearAllPools()
         {
-            throw new NotImplementedException();
         }
 
         public string CurrentVersion
         {
-            get { throw new NotImplementedException(); }
+            get { return PostgreSqlStatements.CurrentVersion; }
         }
 
         public string DatabaseExists
         {
-            get { throw new NotImplementedException(); }
+            get { return PostgreSqlStatements.DatabaseExists; }
         }
 
         public string CreateDatabase
         {
-            get { throw new NotImplementedException(); }
+            get { return PostgreSqlStatements.CreateDatabase; }
         }
 
         public string DropDatabase
         {
-            get { throw new NotImplementedException(); }
+            get { return PostgreSqlStatements.DropDatabase; }
         }
 
         public string SchemaVersionTableExists
         {
-            get { throw new NotImplementedException(); }
+            get { return PostgreSqlStatements.SchemaVersionTableExists; }
         }
 
         public string CreateSchemaVersionTable
         {
-            get { throw new NotImplementedException(); }
+            get { return PostgreSqlStatements.CreateSchemaVersionTable; }
         }
 
         public string DropSchemaVersionTable
         {
-            get { throw new NotImplementedException(); }
+            get { return PostgreSqlStatements.DropSchemaVersionTable; }
         }
 
         public string InsertSchemaVersion
         {
-            get { throw new NotImplementedException(); }
+            get { return PostgreSqlStatements.InsertSchemaVersion; }
         }
 
         public string DeleteSchemaVersion
         {
-            get { throw new NotImplementedException(); }
+            get { return PostgreSqlStatements.DeleteSchemaVersion; }
         }
     }
 }

@@ -41,10 +41,10 @@ namespace DbTransmogrifier
 
         public void UpToLatest()
         {
-            UpTo(int.MaxValue);
+            UpTo(long.MaxValue);
         }
 
-        public void UpTo(int version)
+        public void UpTo(long version)
         {
             var currentVersion = CurrentVersion;
             if (currentVersion < 0) return;
@@ -62,7 +62,7 @@ namespace DbTransmogrifier
 
                 var appliedMigrations = false;
 
-                for (int m = currentVersion + 1; m <= version; m++)
+                for (long m = currentVersion + 1; m <= version; m++)
                 {
                     var migration = builder.BuildMigration(m);
                     if (migration == null) break;
@@ -92,7 +92,7 @@ namespace DbTransmogrifier
             _dialect.ClearAllPools();
         }
 
-        public void DownTo(int version)
+        public void DownTo(long version)
         {
             var currentVersion = CurrentVersion;
             if (currentVersion < 0) return;
@@ -110,7 +110,7 @@ namespace DbTransmogrifier
 
                 var appliedMigrations = false;
 
-                for (int m = currentVersion; m >= version; m--)
+                for (long m = currentVersion; m >= version; m--)
                 {
                     var migration = builder.BuildMigration(m);
                     if (migration == null) break;
@@ -153,7 +153,7 @@ namespace DbTransmogrifier
             return false;
         }
 
-        public int CurrentVersion
+        public long CurrentVersion
         {
             get
             {
@@ -174,11 +174,11 @@ namespace DbTransmogrifier
             }
         }
 
-        private int GetCurrentVersion(IDbConnection connection, IDbTransaction transaction = null)
+        private long GetCurrentVersion(IDbConnection connection, IDbTransaction transaction = null)
         {
             var command = connection.CreateCommand(_dialect.CurrentVersion);
             if (transaction != null) command.Transaction = transaction;
-            return (int)command.ExecuteScalar();
+            return (long)command.ExecuteScalar();
         }
 
         public void TearDown()
