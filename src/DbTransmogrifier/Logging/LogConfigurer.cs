@@ -1,11 +1,10 @@
 ﻿using System;
-using DbTransmogrifier.Logging;
 
-namespace DbTransmogrifier
+namespace DbTransmogrifier.Logging
 {
-    public class Bootstrapper
+    public class LogConfigurer
     {
-        public void Bootstrap()
+        public static void Configure()
         {
 #if RELEASE
             LoggerFactory.RegisterBeforeLogInterceptor(                

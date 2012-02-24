@@ -5,21 +5,15 @@ using System.Linq;
 
 namespace DbTransmogrifier.Migrations
 {
-    public static class MigrationConfiguration
-    {
-        public static Func<IDictionary<Type, object>, IMigrationBuilder> MigrationBuilder = dependencies => new DefaultMigrationBuilder(dependencies);
-        public static Func<IMigrationResolver> MigrationResolver = () => new DefaultMigrationResolver();
-    }
-
     public class DefaultMigrationBuilder : IMigrationBuilder
     {
         private readonly IDictionary<Type, object> _dependencies;
         private readonly IMigrationResolver _migrationResolver;
 
-        public DefaultMigrationBuilder(IDictionary<Type, object> dependencies)
+        public DefaultMigrationBuilder(IDictionary<Type, object> dependencies, IMigrationResolver migrationResolver)
         {
             _dependencies = dependencies;
-            _migrationResolver = MigrationConfiguration.MigrationResolver();
+            _migrationResolver = migrationResolver;
         }
 
         public IList<Migration> BuildMigrationsGreaterThan(long version)
