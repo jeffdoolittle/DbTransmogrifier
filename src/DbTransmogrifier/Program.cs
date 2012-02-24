@@ -1,11 +1,19 @@
-﻿namespace DbTransmogrifier
+﻿using DbTransmogrifier.Logging;
+using DbTransmogrifier.Migrations;
+
+namespace DbTransmogrifier
 {
     class Program
     {
         static void Main()
         {
-            new Bootstrapper().Bootstrap();
-            new Processor().Process();
+            LogConfigurer.Configure();
+
+            var transmogrifier = MigrationConfigurer
+                .ConfigureWithDefaults()
+                .BuildTransmogrifier();
+
+            new Processor(transmogrifier).Process();
         }
     }
 

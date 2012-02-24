@@ -13,12 +13,12 @@ namespace DbTransmogrifier
         private static readonly IList<IActionHandler> Handlers = new List<IActionHandler>();
         private readonly string[] _args;
 
-        public Processor()
-            : this(Environment.GetCommandLineArgs().Skip(1).ToArray(), new Transmogrifier())
+        public Processor(Transmogrifier transmogrifier)
+            : this(transmogrifier, Environment.GetCommandLineArgs().Skip(1).ToArray())
         {
         }
 
-        public Processor(string[] args, Transmogrifier transmogrifier)
+        public Processor(Transmogrifier transmogrifier, string[] args)
         {
             _transmogrifier = transmogrifier;
             _args = args ?? new string[0];

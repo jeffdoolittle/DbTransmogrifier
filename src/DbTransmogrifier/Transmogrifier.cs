@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Linq;
-using DbTransmogrifier.Config;
 using DbTransmogrifier.Database;
 using DbTransmogrifier.Dialects;
 using DbTransmogrifier.Logging;
@@ -13,29 +11,18 @@ namespace DbTransmogrifier
 {   
     public class Transmogrifier
     {
-        private readonly IMigrationResolver _migrationResolver;
         private static readonly ILog Log = LoggerFactory.GetLoggerFor(typeof(Transmogrifier));
-        private readonly string _providerName;
+        private readonly Func<IDictionary<Type, object>, IMigrationBuilder> _migrationBuilderFactory;
         private readonly ISqlDialect _dialect;
-        private readonly string _targetDatabaseName;
         private readonly IConnectionFactory _connectionFactory;
+        private readonly string _databaseName;
 
-        public Transmogrifier()
-            : this(new DefaultConfigurator(), new DefaultMigrationResolver(), null, null)
+        public Transmogrifier(IMigrationConfiguration configuration)
         {
-        }
-
-        public Transmogrifier(IConfigurator configurator, IMigrationResolver migrationResolver, ISqlDialect sqlDialect, IConnectionFactory connectionFactory)
-        {
-            _migrationResolver = migrationResolver;
-            _providerName = configurator.ProviderName;
-            Log.InfoFormat("Using {0} provider", _providerName);
-            _dialect = sqlDialect ?? GetDialect(configurator.ProviderName, configurator.TargetConnectionString);
-            Log.InfoFormat("Using {0} dialect", _dialect.GetType().Name);
-            _targetDatabaseName = _dialect.ExtractDatabaseName(configurator.TargetConnectionString);
-            Log.InfoFormat("Target Database: {0}", _targetDatabaseName);
-            _connectionFactory = connectionFactory ?? 
-                new ConnectionFactory(DbProviderFactories.GetFactory(_providerName), configurator.MasterConnectionString, configurator.TargetConnectionString);
+            _migrationBuilderFactory = configuration.MigrationBuilderFactory;
+            _dialect = configuration.Dialect;
+            _connectionFactory = configuration.ConnectionFactory;
+            _databaseName = configuration.DatabaseName;
         }
 
         public void Init()
@@ -71,8 +58,8 @@ namespace DbTransmogrifier
                                            {typeof (IDbConnection), targetConnection},
                                            {typeof (IDbTransaction), transaction}
                                        };
-
-                var builder = MigrationConfiguration.MigrationBuilder(dependencies);
+                
+                var builder = _migrationBuilderFactory(dependencies);
 
                 var migrations = builder.BuildMigrationsGreaterThan(currentVersion)
                     .Where(x => x.Version <= version);
@@ -81,7 +68,13 @@ namespace DbTransmogrifier
 
                 foreach (var migration in migrations)
                 {
-                    foreach (var script in migration.Up) targetConnection.Execute(script, transaction);
+                    Log.DebugFormat("Applying up migration {0} - {1}", migration.Version, migration.Name);
+
+                    foreach (var script in migration.Up)
+                    {
+                        targetConnection.Execute(script, transaction);
+                        Log.DebugFormat("Executed script - {0}", script);
+                    }
 
                     var versionCommand = targetConnection.CreateCommand(_dialect.InsertSchemaVersion, migration.Version);
                     versionCommand.Transaction = transaction;
@@ -110,7 +103,7 @@ namespace DbTransmogrifier
                                            {typeof (IDbTransaction), transaction}
                                        };
 
-                var builder = MigrationConfiguration.MigrationBuilder(dependencies);
+                var builder = _migrationBuilderFactory(dependencies);
 
                 var migrations = builder.BuildMigrationsLessThanOrEqualTo(currentVersion)
                     .Where(x => x.Version > version);
@@ -119,7 +112,13 @@ namespace DbTransmogrifier
 
                 foreach (var migration in migrations)
                 {
-                    foreach (var script in migration.Down) targetConnection.Execute(script, transaction);
+                    Log.DebugFormat("Applying down migration {0} - {1}", migration.Version, migration.Name);
+
+                    foreach (var script in migration.Down)
+                    {
+                        Log.DebugFormat("Executed script - {0}", script);
+                        targetConnection.Execute(script, transaction);
+                    }
 
                     var versionCommand = targetConnection.CreateCommand(_dialect.DeleteSchemaVersion, migration.Version);
                     versionCommand.Transaction = transaction;
@@ -140,7 +139,7 @@ namespace DbTransmogrifier
             {
                 if (!DatabaseExists(masterConnection))
                 {
-                    Log.ErrorFormat("Database {0} does not exist.  You must initialize the database.", _targetDatabaseName);
+                    Log.ErrorFormat("Database {0} does not exist.  You must initialize the database.", _databaseName);
                     return true;
                 }
             }
@@ -202,7 +201,7 @@ namespace DbTransmogrifier
 
         private bool DatabaseExists(IDbConnection connection)
         {
-            using (var command = connection.CreateCommand(_dialect.DatabaseExists, _targetDatabaseName))
+            using (var command = connection.CreateCommand(_dialect.DatabaseExists, _databaseName))
             {
                 return (bool)command.ExecuteScalar();
             }
@@ -220,14 +219,14 @@ namespace DbTransmogrifier
         {
             if (DatabaseExists(connection))
             {
-                Log.InfoFormat("Database {0} already exists.", _targetDatabaseName);
+                Log.InfoFormat("Database {0} already exists.", _databaseName);
                 return;
             }
 
-            using (var createCommand = connection.CreateCommand(string.Format(_dialect.CreateDatabase, _targetDatabaseName)))
+            using (var createCommand = connection.CreateCommand(string.Format(_dialect.CreateDatabase, _databaseName)))
             {
                 createCommand.ExecuteNonQuery();
-                Log.InfoFormat("Database {0} created.", _targetDatabaseName);
+                Log.InfoFormat("Database {0} created.", _databaseName);
             }
         }
 
@@ -235,38 +234,15 @@ namespace DbTransmogrifier
         {
             if (!DatabaseExists(connection))
             {
-                Log.InfoFormat("Database {0} already dropped.", _targetDatabaseName);
+                Log.InfoFormat("Database {0} already dropped.", _databaseName);
                 return;
             }
 
-            using (var createCommand = connection.CreateCommand(string.Format(_dialect.DropDatabase, _targetDatabaseName)))
+            using (var createCommand = connection.CreateCommand(string.Format(_dialect.DropDatabase, _databaseName)))
             {
                 createCommand.ExecuteNonQuery();
-                Log.InfoFormat("Database {0} dropped.", _targetDatabaseName);
+                Log.InfoFormat("Database {0} dropped.", _databaseName);
             }
-        }
-
-        private static ISqlDialect GetDialect(string providerName, string connectionString)
-        {
-            //if (providerName.Contains("MYSQL"))
-            //    return new MySqlDialect();
-
-            //if (providerName.Contains("SQLITE"))
-            //    return new SqliteDialect();
-
-            //if (providerName.Contains("SQLSERVERCE") || connectionString.Contains(".SDF"))
-            //    return new SqlCeDialect();
-
-            if (providerName.Contains("POSTGRES") || providerName.Contains("NPGSQL"))
-                return new PostgreSqlDialect();
-
-            //if (providerName.Contains("FIREBIRD"))
-            //    return new FirebirdSqlDialect();
-
-            //if (providerName.Contains("OLEDB") && connectionString.Contains("MICROSOFT.JET"))
-            //    return new AccessDialect();
-
-            return new MsSqlDialect();
         }
     }
 }

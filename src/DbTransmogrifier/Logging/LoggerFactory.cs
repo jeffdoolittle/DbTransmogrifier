@@ -50,6 +50,16 @@ namespace DbTransmogrifier.Logging
                 foreach (var interceptor in After) interceptor.Invoke(_type, logLevel, message);
             }
 
+            public void Debug(string message)
+            {
+                DoInterceptedLogging(LogLevel.Debug, message, () => _innerLogger.Debug(message));
+            }
+
+            public void DebugFormat(string message, params object[] args)
+            {
+                DoInterceptedLogging(LogLevel.Debug, message, () => _innerLogger.DebugFormat(message, args));
+            }
+
             public void Info(string message)
             {
                 DoInterceptedLogging(LogLevel.Info, message, () => _innerLogger.Info(message));
