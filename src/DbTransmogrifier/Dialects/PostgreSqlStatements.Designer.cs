@@ -22,14 +22,14 @@ namespace DbTransmogrifier.Dialects {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class MsSqlStatements {
+    internal class PostgreSqlStatements {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal MsSqlStatements() {
+        internal PostgreSqlStatements() {
         }
         
         /// <summary>
@@ -39,7 +39,7 @@ namespace DbTransmogrifier.Dialects {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DbTransmogrifier.Dialects.MsSqlStatements", typeof(MsSqlStatements).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("DbTransmogrifier.Dialects.PostgreSqlStatements", typeof(PostgreSqlStatements).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -61,7 +61,7 @@ namespace DbTransmogrifier.Dialects {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CREATE DATABASE {0};.
+        ///   Looks up a localized string similar to CREATE DATABASE &quot;{0}&quot;;.
         /// </summary>
         internal static string CreateDatabase {
             get {
@@ -70,8 +70,8 @@ namespace DbTransmogrifier.Dialects {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to CREATE TABLE [SchemaVersion] ( [Version] bigint NOT NULL PRIMARY KEY );
-        ///INSERT INTO [SchemaVersion] VALUES(0);.
+        ///   Looks up a localized string similar to CREATE TABLE &quot;SchemaVersion&quot; (&quot;Version&quot; bigint NOT NULL PRIMARY KEY);
+        ///INSERT INTO &quot;SchemaVersion&quot; VALUES(0);.
         /// </summary>
         internal static string CreateSchemaVersionTable {
             get {
@@ -80,7 +80,7 @@ namespace DbTransmogrifier.Dialects {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to select max([Version]) from [SchemaVersion];.
+        ///   Looks up a localized string similar to select max(&quot;Version&quot;) from &quot;SchemaVersion&quot;;.
         /// </summary>
         internal static string CurrentVersion {
             get {
@@ -89,7 +89,7 @@ namespace DbTransmogrifier.Dialects {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT cast(count(*) as bit) FROM sys.databases WHERE [name] = @0;.
+        ///   Looks up a localized string similar to SELECT cast(count(*) as bit) FROM pg_database WHERE datname = @0;.
         /// </summary>
         internal static string DatabaseExists {
             get {
@@ -98,7 +98,7 @@ namespace DbTransmogrifier.Dialects {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DELETE FROM [SchemaVersion] WHERE [Version] = @0;.
+        ///   Looks up a localized string similar to DELETE FROM &quot;SchemaVersion&quot; WHERE &quot;Version&quot; = @0;.
         /// </summary>
         internal static string DeleteSchemaVersion {
             get {
@@ -107,7 +107,7 @@ namespace DbTransmogrifier.Dialects {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DROP DATABASE {0};.
+        ///   Looks up a localized string similar to DROP DATABASE &quot;{0}&quot;;.
         /// </summary>
         internal static string DropDatabase {
             get {
@@ -116,7 +116,7 @@ namespace DbTransmogrifier.Dialects {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DROP TABLE [SchemaVersion];.
+        ///   Looks up a localized string similar to DROP TABLE &quot;SchemaVersion&quot;;.
         /// </summary>
         internal static string DropSchemaVersionTable {
             get {
@@ -125,7 +125,7 @@ namespace DbTransmogrifier.Dialects {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to INSERT INTO [SchemaVersion] VALUES (@0);.
+        ///   Looks up a localized string similar to INSERT INTO &quot;SchemaVersion&quot; VALUES (@0);.
         /// </summary>
         internal static string InsertSchemaVersion {
             get {
@@ -134,7 +134,7 @@ namespace DbTransmogrifier.Dialects {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to SELECT cast(count(*) as bit) FROM sys.tables WHERE [name] = &apos;SchemaVersion&apos;;.
+        ///   Looks up a localized string similar to SELECT cast(count(*) as bit) FROM information_schema.tables WHERE table_name = &apos;SchemaVersion&apos;;.
         /// </summary>
         internal static string SchemaVersionTableExists {
             get {
