@@ -6,11 +6,11 @@ using System.Reflection;
 
 namespace DbTransmogrifier.Migrations
 {
-    public class DefaultMigrationResolver : IMigrationResolver
+    public class DefaultMigrationTypeSource : IMigrationTypeSource
     {
         private readonly IDictionary<long, Type> _migrationTypes = new Dictionary<long, Type>();
 
-        public DefaultMigrationResolver()
+        public DefaultMigrationTypeSource()
         {
             var appAssembly = Assembly.GetExecutingAssembly();
             var appName = appAssembly.GetName().Name;
@@ -37,20 +37,9 @@ namespace DbTransmogrifier.Migrations
             }
         }
 
-        public IDictionary<long, Type> GetMigrationsGreaterThan(long version)
+        public Type GetMigrationType(long version)
         {
-            return _migrationTypes
-                .Where(x => x.Key > version)
-                .OrderBy(x => x.Key)
-                .ToDictionary(x=>x.Key, x => x.Value);
-        }
-
-        public IDictionary<long, Type> GetMigrationsLessThanOrEqualTo(long version)
-        {
-            return _migrationTypes
-                .Where(x => x.Key <= version)
-                .OrderByDescending(x => x.Key)
-                .ToDictionary(x => x.Key, x => x.Value);
+            return !_migrationTypes.ContainsKey(version) ? null : _migrationTypes[version];
         }
     }
 }

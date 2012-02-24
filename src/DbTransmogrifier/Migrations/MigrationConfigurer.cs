@@ -13,15 +13,15 @@ namespace DbTransmogrifier.Migrations
         private static readonly ILog Log = LoggerFactory.GetLoggerFor(typeof (MigrationConfigurer));
 
         public static Func<IDictionary<Type, object>, IMigrationBuilder> MigrationBuilderFactory;
-        public static Func<IMigrationResolver> MigrationResolverFactory;
+        public static Func<IMigrationTypeSource> MigrationSourceFactory;
         public static Func<string> ProviderNameSource;
         public static Func<string> MasterConnectionStringSource;
         public static Func<string> TargetConnectionStringSource;
 
         public static MigrationConfigurer ConfigureWithDefaults()
         {
-            MigrationBuilderFactory = dependencies => new DefaultMigrationBuilder(dependencies, MigrationResolverFactory());
-            MigrationResolverFactory = () => new DefaultMigrationResolver();
+            MigrationBuilderFactory = dependencies => new DefaultMigrationBuilder(dependencies, MigrationSourceFactory());
+            MigrationSourceFactory = () => new DefaultMigrationTypeSource();
             ProviderNameSource = () => ConfigurationManager.AppSettings["ProviderInvariantName"] ?? "System.Data.SqlClient";
             MasterConnectionStringSource = () => ConfigurationManager.ConnectionStrings["Master"].ConnectionString;
             TargetConnectionStringSource = () => ConfigurationManager.ConnectionStrings["Target"].ConnectionString;

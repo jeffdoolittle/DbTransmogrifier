@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using DbTransmogrifier.Database;
 using DbTransmogrifier.Dialects;
 using DbTransmogrifier.Logging;
 using DbTransmogrifier.Migrations;
 
 namespace DbTransmogrifier
-{   
+{
     public class Transmogrifier
     {
         private static readonly ILog Log = LoggerFactory.GetLoggerFor(typeof(Transmogrifier));
@@ -58,16 +57,16 @@ namespace DbTransmogrifier
                                            {typeof (IDbConnection), targetConnection},
                                            {typeof (IDbTransaction), transaction}
                                        };
-                
+
                 var builder = _migrationBuilderFactory(dependencies);
 
-                var migrations = builder.BuildMigrationsGreaterThan(currentVersion)
-                    .Where(x => x.Version <= version);
+                var appliedMigrations = false;
 
-                if (migrations.Count() == 0) Log.Info("No migrations to apply. Database is current.");
-
-                foreach (var migration in migrations)
+                for (int m = currentVersion + 1; m <= version; m++)
                 {
+                    var migration = builder.BuildMigration(m);
+                    if (migration == null) break;
+
                     Log.DebugFormat("Applying up migration {0} - {1}", migration.Version, migration.Name);
 
                     foreach (var script in migration.Up)
@@ -81,7 +80,11 @@ namespace DbTransmogrifier
                     versionCommand.ExecuteNonQuery();
 
                     Log.InfoFormat("Applied up migration {0} - {1}", migration.Version, migration.Name);
+
+                    appliedMigrations = true;
                 }
+
+                if (!appliedMigrations) Log.Info("No migrations to apply. Database is current.");
 
                 transaction.Commit();
             }
@@ -105,19 +108,19 @@ namespace DbTransmogrifier
 
                 var builder = _migrationBuilderFactory(dependencies);
 
-                var migrations = builder.BuildMigrationsLessThanOrEqualTo(currentVersion)
-                    .Where(x => x.Version > version);
+                var appliedMigrations = false;
 
-                if (migrations.Count() == 0) Log.Info("No migrations to apply. Database is current.");
-
-                foreach (var migration in migrations)
+                for (int m = currentVersion; m >= version; m--)
                 {
+                    var migration = builder.BuildMigration(m);
+                    if (migration == null) break;
+
                     Log.DebugFormat("Applying down migration {0} - {1}", migration.Version, migration.Name);
 
                     foreach (var script in migration.Down)
                     {
-                        Log.DebugFormat("Executed script - {0}", script);
                         targetConnection.Execute(script, transaction);
+                        Log.DebugFormat("Executed script - {0}", script);
                     }
 
                     var versionCommand = targetConnection.CreateCommand(_dialect.DeleteSchemaVersion, migration.Version);
@@ -125,7 +128,11 @@ namespace DbTransmogrifier
                     versionCommand.ExecuteNonQuery();
 
                     Log.InfoFormat("Applied down migration {0} - {1}", migration.Version, migration.Name);
+
+                    appliedMigrations = true;
                 }
+
+                if (!appliedMigrations) Log.Info("No migrations to apply. Database is current.");
 
                 transaction.Commit();
             }
