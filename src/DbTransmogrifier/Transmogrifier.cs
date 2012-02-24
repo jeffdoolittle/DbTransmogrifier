@@ -59,12 +59,12 @@ namespace DbTransmogrifier
 
         public void UpTo(int version)
         {
-            if (CannotRunMigrations()) return;
+            var currentVersion = CurrentVersion;
+            if (currentVersion < 0) return;
 
             using (var targetConnection = _connectionFactory.OpenTarget())
             using (var transaction = targetConnection.BeginTransaction())
             {
-                var currentVersion = GetCurrentVersion(targetConnection, transaction);
                 var migrations = _migrationFactory.GetMigrationsGreaterThan(currentVersion)
                     .Where(x => x.Version <= version);
 
@@ -89,12 +89,12 @@ namespace DbTransmogrifier
 
         public void DownTo(int version)
         {
-            if (CannotRunMigrations()) return;
+            var currentVersion = CurrentVersion;
+            if (currentVersion < 0) return;
 
             using (var targetConnection = _connectionFactory.OpenTarget())
             using (var transaction = targetConnection.BeginTransaction())
             {
-                var currentVersion = GetCurrentVersion(targetConnection, transaction);
                 var migrations = _migrationFactory.GetMigrationsLessThanOrEqualTo(currentVersion)
                     .Where(x => x.Version > version);
 
