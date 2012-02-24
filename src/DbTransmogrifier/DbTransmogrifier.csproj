@@ -26,7 +26,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
+    <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>..\..\build\output\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -41,12 +41,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bootstrapper.cs" />
-    <Compile Include="Config\IConfigurator.cs" />
+    <Compile Include="Logging\LogConfigurer.cs" />
+    <Compile Include="Migrations\IMigrationConfiguration.cs" />
+    <Compile Include="Migrations\MigrationConfigurer.cs" />
     <Compile Include="Database\ConnectionFactory.cs" />
     <Compile Include="Database\DbConnectionExtensions.cs" />
-    <Compile Include="Config\DefaultConfigurator.cs" />
-    <Compile Include="Migrations\DefaultMigrationResolver.cs" />
+    <Compile Include="Migrations\DefaultMigrationBuilder.cs" />
+    <Compile Include="Migrations\DefaultMigrationTypeSource.cs" />
     <Compile Include="Dialects\ISqlDialect.cs" />
     <Compile Include="Dialects\MsSqlStatements.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -54,12 +55,14 @@
       <DependentUpon>MsSqlStatements.resx</DependentUpon>
     </Compile>
     <Compile Include="Dialects\PostgreSqlDialect.cs" />
-    <Compile Include="Migrations\IMigrationResolver.cs" />
+    <Compile Include="Migrations\IMigrationBuilder.cs" />
+    <Compile Include="Migrations\IMigrationTypeSource.cs" />
     <Compile Include="Logging\DefaultLog.cs" />
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\LoggerFactory.cs" />
     <Compile Include="Dialects\MsSqlDialect.cs" />
-    <Compile Include="Migrations\MigrationDescriptor.cs" />
+    <Compile Include="Migrations\Migration.cs" />
+    <Compile Include="Database\SqlDialectResolver.cs" />
     <Compile Include="Processor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

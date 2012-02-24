@@ -1,8 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
-using System.Linq;
-using DbTransmogrifier.Config;
 using DbTransmogrifier.Database;
 using DbTransmogrifier.Dialects;
 using DbTransmogrifier.Logging;
@@ -12,31 +10,18 @@ namespace DbTransmogrifier
 {
     public class Transmogrifier
     {
-        private readonly IConfigurator _configurator;
-        private readonly IMigrationResolver _migrationResolver;
         private static readonly ILog Log = LoggerFactory.GetLoggerFor(typeof(Transmogrifier));
-        private readonly string _providerName;
+        private readonly Func<IDictionary<Type, object>, IMigrationBuilder> _migrationBuilderFactory;
         private readonly ISqlDialect _dialect;
-        private readonly string _targetDatabaseName;
         private readonly IConnectionFactory _connectionFactory;
+        private readonly string _databaseName;
 
-        public Transmogrifier()
-            : this(new DefaultConfigurator(), new DefaultMigrationResolver(), null, null)
+        public Transmogrifier(IMigrationConfiguration configuration)
         {
-        }
-
-        public Transmogrifier(IConfigurator configurator, IMigrationResolver migrationResolver, ISqlDialect sqlDialect, IConnectionFactory connectionFactory)
-        {
-            _configurator = configurator;
-            _migrationResolver = migrationResolver;
-            _providerName = configurator.ProviderName;
-            Log.InfoFormat("Using {0} provider", _providerName);
-            _dialect = sqlDialect ?? GetDialect(configurator.ProviderName, _configurator.TargetConnectionString);
-            Log.InfoFormat("Using {0} dialect", _dialect.GetType().Name);
-            _targetDatabaseName = _dialect.ExtractDatabaseName(_configurator.TargetConnectionString);
-            Log.InfoFormat("Target Database: {0}", _targetDatabaseName);
-            var providerFactory = DbProviderFactories.GetFactory(_providerName);
-            _connectionFactory = connectionFactory ?? new ConnectionFactory(providerFactory, configurator.MasterConnectionString, configurator.TargetConnectionString);
+            _migrationBuilderFactory = configuration.MigrationBuilderFactory;
+            _dialect = configuration.Dialect;
+            _connectionFactory = configuration.ConnectionFactory;
+            _databaseName = configuration.DatabaseName;
         }
 
         public void Init()
@@ -61,34 +46,45 @@ namespace DbTransmogrifier
 
         public void UpTo(int version)
         {
-            using (var masterConnection = _connectionFactory.OpenMaster())
-            {
-                if (!DatabaseExists(masterConnection))
-                {
-                    Log.ErrorFormat("Database {0} does not exist.  You must initialize the database before applying migrations.", _targetDatabaseName);
-                    return;
-                }
-            }
+            var currentVersion = CurrentVersion;
+            if (currentVersion < 0) return;
 
             using (var targetConnection = _connectionFactory.OpenTarget())
             using (var transaction = targetConnection.BeginTransaction())
             {
-                var currentVersion = GetCurrentVersion(targetConnection, transaction);
-                var migrations = _migrationResolver.GetMigrationsGreaterThan(currentVersion)
-                    .Where(x => x.Version <= version);
+                var dependencies = new Dictionary<Type, object>
+                                       {
+                                           {typeof (IDbConnection), targetConnection},
+                                           {typeof (IDbTransaction), transaction}
+                                       };
 
-                if (migrations.Count() == 0) Log.Info("No migrations to apply. Database is current.");
+                var builder = _migrationBuilderFactory(dependencies);
 
-                foreach (var migration in migrations)
+                var appliedMigrations = false;
+
+                for (int m = currentVersion + 1; m <= version; m++)
                 {
-                    foreach (var script in migration.Up) targetConnection.Execute(script, transaction);
+                    var migration = builder.BuildMigration(m);
+                    if (migration == null) break;
+
+                    Log.DebugFormat("Applying up migration {0} - {1}", migration.Version, migration.Name);
+
+                    foreach (var script in migration.Up)
+                    {
+                        targetConnection.Execute(script, transaction);
+                        Log.DebugFormat("Executed script - {0}", script);
+                    }
 
                     var versionCommand = targetConnection.CreateCommand(_dialect.InsertSchemaVersion, migration.Version);
                     versionCommand.Transaction = transaction;
                     versionCommand.ExecuteNonQuery();
 
                     Log.InfoFormat("Applied up migration {0} - {1}", migration.Version, migration.Name);
+
+                    appliedMigrations = true;
                 }
+
+                if (!appliedMigrations) Log.Info("No migrations to apply. Database is current.");
 
                 transaction.Commit();
             }
@@ -98,34 +94,45 @@ namespace DbTransmogrifier
 
         public void DownTo(int version)
         {
-            using (var masterConnection = _connectionFactory.OpenMaster())
-            {
-                if (!DatabaseExists(masterConnection))
-                {
-                    Log.ErrorFormat("Database {0} does not exist.  You must initialize the database before applying migrations.", _targetDatabaseName);
-                    return;
-                }
-            }
+            var currentVersion = CurrentVersion;
+            if (currentVersion < 0) return;
 
             using (var targetConnection = _connectionFactory.OpenTarget())
             using (var transaction = targetConnection.BeginTransaction())
             {
-                var currentVersion = GetCurrentVersion(targetConnection, transaction);
-                var migrations = _migrationResolver.GetMigrationsLessThanOrEqualTo(currentVersion)
-                    .Where(x => x.Version > version);
+                var dependencies = new Dictionary<Type, object>
+                                       {
+                                           {typeof (IDbConnection), targetConnection},
+                                           {typeof (IDbTransaction), transaction}
+                                       };
 
-                if (migrations.Count() == 0) Log.Info("No migrations to apply. Database is current.");
+                var builder = _migrationBuilderFactory(dependencies);
 
-                foreach (var migration in migrations)
+                var appliedMigrations = false;
+
+                for (int m = currentVersion; m >= version; m--)
                 {
+                    var migration = builder.BuildMigration(m);
+                    if (migration == null) break;
+
+                    Log.DebugFormat("Applying down migration {0} - {1}", migration.Version, migration.Name);
+
+                    foreach (var script in migration.Down)
+                    {
+                        targetConnection.Execute(script, transaction);
+                        Log.DebugFormat("Executed script - {0}", script);
+                    }
+
                     var versionCommand = targetConnection.CreateCommand(_dialect.DeleteSchemaVersion, migration.Version);
                     versionCommand.Transaction = transaction;
                     versionCommand.ExecuteNonQuery();
 
-                    foreach (var script in migration.Down) targetConnection.Execute(script, transaction);
-
                     Log.InfoFormat("Applied down migration {0} - {1}", migration.Version, migration.Name);
+
+                    appliedMigrations = true;
                 }
+
+                if (!appliedMigrations) Log.Info("No migrations to apply. Database is current.");
 
                 transaction.Commit();
             }
@@ -133,10 +140,25 @@ namespace DbTransmogrifier
             _dialect.ClearAllPools();
         }
 
+        private bool CannotRunMigrations()
+        {
+            using (var masterConnection = _connectionFactory.OpenMaster())
+            {
+                if (!DatabaseExists(masterConnection))
+                {
+                    Log.ErrorFormat("Database {0} does not exist.  You must initialize the database.", _databaseName);
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public int CurrentVersion
         {
             get
             {
+                if (CannotRunMigrations()) return -1;
+
                 try
                 {
                     using (var targetConnection = _connectionFactory.OpenTarget())
@@ -186,7 +208,7 @@ namespace DbTransmogrifier
 
         private bool DatabaseExists(IDbConnection connection)
         {
-            using (var command = connection.CreateCommand(_dialect.DatabaseExists, _targetDatabaseName))
+            using (var command = connection.CreateCommand(_dialect.DatabaseExists, _databaseName))
             {
                 return (bool)command.ExecuteScalar();
             }
@@ -204,14 +226,14 @@ namespace DbTransmogrifier
         {
             if (DatabaseExists(connection))
             {
-                Log.InfoFormat("Database {0} already exists.", _targetDatabaseName);
+                Log.InfoFormat("Database {0} already exists.", _databaseName);
                 return;
             }
 
-            using (var createCommand = connection.CreateCommand(string.Format(_dialect.CreateDatabase, _targetDatabaseName)))
+            using (var createCommand = connection.CreateCommand(string.Format(_dialect.CreateDatabase, _databaseName)))
             {
                 createCommand.ExecuteNonQuery();
-                Log.InfoFormat("Database {0} created.", _targetDatabaseName);
+                Log.InfoFormat("Database {0} created.", _databaseName);
             }
         }
 
@@ -219,38 +241,15 @@ namespace DbTransmogrifier
         {
             if (!DatabaseExists(connection))
             {
-                Log.InfoFormat("Database {0} already dropped.", _targetDatabaseName);
+                Log.InfoFormat("Database {0} already dropped.", _databaseName);
                 return;
             }
 
-            using (var createCommand = connection.CreateCommand(string.Format(_dialect.DropDatabase, _targetDatabaseName)))
+            using (var createCommand = connection.CreateCommand(string.Format(_dialect.DropDatabase, _databaseName)))
             {
                 createCommand.ExecuteNonQuery();
-                Log.InfoFormat("Database {0} dropped.", _targetDatabaseName);
+                Log.InfoFormat("Database {0} dropped.", _databaseName);
             }
-        }
-
-        private static ISqlDialect GetDialect(string providerName, string connectionString)
-        {
-            //if (providerName.Contains("MYSQL"))
-            //    return new MySqlDialect();
-
-            //if (providerName.Contains("SQLITE"))
-            //    return new SqliteDialect();
-
-            //if (providerName.Contains("SQLSERVERCE") || connectionString.Contains(".SDF"))
-            //    return new SqlCeDialect();
-
-            if (providerName.Contains("POSTGRES") || providerName.Contains("NPGSQL"))
-                return new PostgreSqlDialect();
-
-            //if (providerName.Contains("FIREBIRD"))
-            //    return new FirebirdSqlDialect();
-
-            //if (providerName.Contains("OLEDB") && connectionString.Contains("MICROSOFT.JET"))
-            //    return new AccessDialect();
-
-            return new MsSqlDialect();
         }
     }
 }

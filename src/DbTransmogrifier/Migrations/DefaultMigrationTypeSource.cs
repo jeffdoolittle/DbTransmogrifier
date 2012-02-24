@@ -6,11 +6,11 @@ using System.Reflection;
 
 namespace DbTransmogrifier.Migrations
 {
-    public class DefaultMigrationResolver : IMigrationResolver
+    public class DefaultMigrationTypeSource : IMigrationTypeSource
     {
-        private readonly IDictionary<int, MigrationDescriptor> _migrationDescriptors = new Dictionary<int, MigrationDescriptor>();
+        private readonly IDictionary<long, Type> _migrationTypes = new Dictionary<long, Type>();
 
-        public DefaultMigrationResolver()
+        public DefaultMigrationTypeSource()
         {
             var appAssembly = Assembly.GetExecutingAssembly();
             var appName = appAssembly.GetName().Name;
@@ -33,31 +33,13 @@ namespace DbTransmogrifier.Migrations
                 dynamic attribute = type.GetCustomAttributes(migrationAttributeType, true).SingleOrDefault();
                 int version = attribute.Version;
 
-                dynamic migration = Activator.CreateInstance(type);
-
-                _migrationDescriptors.Add(version, 
-                                          new MigrationDescriptor(version, type.Name, migration.Up(), migration.Down()));
+                _migrationTypes.Add(version, type);
             }
         }
 
-        public IList<MigrationDescriptor> GetMigrationsGreaterThan(int version)
+        public Type GetMigrationType(long version)
         {
-            return _migrationDescriptors
-                .Where(x => x.Key > version)
-                .OrderBy(x=>x.Key)
-                .Select(x => x.Value)
-                .ToList()
-                .AsReadOnly();
-        }
-
-        public IList<MigrationDescriptor> GetMigrationsLessThanOrEqualTo(int version)
-        {
-            return _migrationDescriptors
-                .Where(x => x.Key <= version)
-                .OrderByDescending(x => x.Key)
-                .Select(x => x.Value)
-                .ToList()
-                .AsReadOnly();
+            return !_migrationTypes.ContainsKey(version) ? null : _migrationTypes[version];
         }
     }
 }
