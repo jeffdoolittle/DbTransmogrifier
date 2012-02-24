@@ -8,7 +8,7 @@ namespace DbTransmogrifier.Migrations
 {
     public class DefaultMigrationResolver : IMigrationResolver
     {
-        private readonly IDictionary<int, MigrationDescriptor> _migrationDescriptors = new Dictionary<int, MigrationDescriptor>();
+        private readonly IDictionary<long, Type> _migrationTypes = new Dictionary<long, Type>();
 
         public DefaultMigrationResolver()
         {
@@ -33,38 +33,24 @@ namespace DbTransmogrifier.Migrations
                 dynamic attribute = type.GetCustomAttributes(migrationAttributeType, true).SingleOrDefault();
                 int version = attribute.Version;
 
-                var ctors = type.GetConstructors();
-                if (ctors.Count() == 1 && ctors[0].GetParameters().Count() == 0)
-                {
-                    dynamic migration = Activator.CreateInstance(type);
-
-                    _migrationDescriptors.Add(version, new MigrationDescriptor(version, type.Name, migration.Up(), migration.Down()));
-                }
-                else
-                {
-                    throw new NotImplementedException("unable to resolve migration with constructor args");
-                }
+                _migrationTypes.Add(version, type);
             }
         }
 
-        public IList<MigrationDescriptor> GetMigrationsGreaterThan(int version)
+        public IDictionary<long, Type> GetMigrationsGreaterThan(long version)
         {
-            return _migrationDescriptors
+            return _migrationTypes
                 .Where(x => x.Key > version)
-                .OrderBy(x=>x.Key)
-                .Select(x => x.Value)
-                .ToList()
-                .AsReadOnly();
+                .OrderBy(x => x.Key)
+                .ToDictionary(x=>x.Key, x => x.Value);
         }
 
-        public IList<MigrationDescriptor> GetMigrationsLessThanOrEqualTo(int version)
+        public IDictionary<long, Type> GetMigrationsLessThanOrEqualTo(long version)
         {
-            return _migrationDescriptors
+            return _migrationTypes
                 .Where(x => x.Key <= version)
                 .OrderByDescending(x => x.Key)
-                .Select(x => x.Value)
-                .ToList()
-                .AsReadOnly();
+                .ToDictionary(x => x.Key, x => x.Value);
         }
     }
 }

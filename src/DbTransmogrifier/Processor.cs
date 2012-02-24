@@ -188,7 +188,9 @@ namespace DbTransmogrifier
 
             public override void Handle(string[] args)
             {
-                Log.InfoFormat("Current version is {0}", Transmogrifier.CurrentVersion);
+                var currentVersion = Transmogrifier.CurrentVersion;
+                if (currentVersion >= 0)
+                    Log.InfoFormat("Current version is {0}", Transmogrifier.CurrentVersion);
             }
         }
     }

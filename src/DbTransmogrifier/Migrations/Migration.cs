@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace DbTransmogrifier.Migrations
 {
-    public class MigrationDescriptor
+    public class Migration
     {
-        public MigrationDescriptor(int version, string name, IEnumerable<string> up, IEnumerable<string> down)
+        public Migration(long version, string name, IEnumerable<string> up, IEnumerable<string> down)
         {
             Version = version;
             Name = name;
@@ -13,7 +13,7 @@ namespace DbTransmogrifier.Migrations
             Down = down.ToList().AsReadOnly();
         }
 
-        public int Version { get; private set; }
+        public long Version { get; private set; }
         public string Name { get; private set; }
         public IList<string> Up { get; private set; }
         public IList<string> Down { get; private set; }
