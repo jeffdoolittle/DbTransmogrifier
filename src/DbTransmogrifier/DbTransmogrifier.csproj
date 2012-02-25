@@ -67,7 +67,7 @@
     <Compile Include="Logging\LoggerFactory.cs" />
     <Compile Include="Dialects\MsSqlDialect.cs" />
     <Compile Include="Migrations\Migration.cs" />
-    <Compile Include="Database\SqlDialectResolver.cs" />
+    <Compile Include="Dialects\SqlDialectResolver.cs" />
     <Compile Include="Processor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

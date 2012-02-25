@@ -1,11 +1,11 @@
-﻿using DbTransmogrifier.Dialects;
-
-namespace DbTransmogrifier.Database
+﻿namespace DbTransmogrifier.Dialects
 {
     public class SqlDialectResolver
     {
         public static ISqlDialect GetDialect(string providerName, string connectionString)
         {
+            providerName = providerName.ToUpperInvariant();
+
             //if (providerName.Contains("MYSQL"))
             //    return new MySqlDialect();
 
