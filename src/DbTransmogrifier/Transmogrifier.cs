@@ -84,7 +84,8 @@ namespace DbTransmogrifier
                     appliedMigrations = true;
                 }
 
-                if (!appliedMigrations) Log.Info("No migrations to apply. Database is current.");
+                if (!appliedMigrations) Log.InfoFormat("No migrations to apply. Database is current at version {0}.", currentVersion);
+                else Log.InfoFormat("Database is now at version {0}.", GetCurrentVersion(targetConnection, transaction));
 
                 transaction.Commit();
             }
@@ -110,7 +111,7 @@ namespace DbTransmogrifier
 
                 var appliedMigrations = false;
 
-                for (long m = currentVersion; m >= version; m--)
+                for (long m = currentVersion; m > version; m--)
                 {
                     var migration = builder.BuildMigration(m);
                     if (migration == null) break;
@@ -132,7 +133,8 @@ namespace DbTransmogrifier
                     appliedMigrations = true;
                 }
 
-                if (!appliedMigrations) Log.Info("No migrations to apply. Database is current.");
+                if (!appliedMigrations) Log.InfoFormat("No migrations to apply. Database is current at version {0}.", currentVersion);
+                else Log.InfoFormat("Database is now at version {0}.", GetCurrentVersion(targetConnection, transaction));
 
                 transaction.Commit();
             }
