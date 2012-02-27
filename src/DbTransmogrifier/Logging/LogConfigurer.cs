@@ -6,7 +6,7 @@ namespace DbTransmogrifier.Logging
     {
         public static void Configure()
         {
-#if RELEASE
+#if !DEBUG
             LoggerFactory.RegisterBeforeLogInterceptor(                
                 (type, logLevel, message) => (logLevel != LogLevel.Debug));
 #endif
