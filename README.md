@@ -60,7 +60,7 @@ public interface IMigration
 }
 ```
 
-See the *SampleMigrations* project for a detailed example.
+Any class implementing the ```IMigration``` interface, and decorated with the ```MigrationAttribute``` will be processed as a migration by the DBTransmogrifier. See the *SampleMigrations* project for a detailed example.
 
 Command line options
 ------------------------------------
