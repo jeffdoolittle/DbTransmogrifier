@@ -41,20 +41,20 @@ DBTransmogrifier supports the following command line options:
 
 ### Database level commands
 
-*```--init``` :: Creates the target database if it does not exist. Creates the "SchemaVersion" table if it does not exist.
-*```--tear-down``` :: Deletes all database Tables, Constraints, Views, Functions and Stored Procedures. Resets "SchemaVersion" table to version 0 (zero).  Basically restores the databse to it's initialized state.
-*```--drop``` :: Drops the database. No warnings, no redo, no cancel.  Be careful! You've been warned.
+* ```--init``` :: Creates the target database if it does not exist. Creates the "SchemaVersion" table if it does not exist.
+* ```--tear-down``` :: Deletes all database Tables, Constraints, Views, Functions and Stored Procedures. Resets "SchemaVersion" table to version 0 (zero).  Basically restores the databse to it's initialized state.
+* ```--drop``` :: Drops the database. No warnings, no redo, no cancel.  Be careful! You've been warned.
 
 ### Migration commands
 
-*```--current-version``` :: Displays the current schema version number.
-*```--up-to-latest``` :: Applies all up migrations after the current version up to the maximum version available.
-*```--up-to={version}``` :: Applies all up migrations after the current version up to the version specified.
-*```--down-to={version}``` :: Applies all down migrations from the current version down to the version specified.
+* ```--current-version``` :: Displays the current schema version number.
+* ```--up-to-latest``` :: Applies all up migrations after the current version up to the maximum version available.
+* ```--up-to={version}``` :: Applies all up migrations after the current version up to the version specified.
+* ```--down-to={version}``` :: Applies all down migrations from the current version down to the version specified.
 
 ### Other commands
 
-*```--help``` :: Displays command line help. Basically just a dump of available command line options to help jog your memory if you forget them.
+* ```--help``` :: Displays command line help. Basically just a dump of available command line options to help jog your memory if you forget them.
 
 Possible Plans for the Future
 -----------------------------
