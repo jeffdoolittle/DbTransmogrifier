@@ -34,7 +34,7 @@ Create a **MigrationAttribute** class in your migration assembly.  This attribut
 DbTransmogrifier looks for an **IMigration** interface with two methods each returning an IEnumerable&lt;string&gt;.  One method should be called *Up()* and the other *Down()*.  See the SampleMigrations project for a detailed example.
 
 
-Defining Migrations in Your Assembly
+Command line options
 ------------------------------------
 
 DBTransmogrifier supports the following command line options:
