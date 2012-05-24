@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System;
+using System.Data.Common;
 
 namespace DbTransmogrifier.Dialects
 {
@@ -60,6 +61,15 @@ namespace DbTransmogrifier.Dialects
         public string DeleteSchemaVersion
         {
             get { return PostgreSqlStatements.DeleteSchemaVersion; }
+        }
+
+        public string TearDown
+        {
+            get
+            {
+                throw new NotImplementedException("Tear Down not implemented for PostgreSqlDialect");
+                //return PostgreSqlStatements.TearDown;
+            }
         }
     }
 }
