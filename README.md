@@ -16,7 +16,7 @@ The DbTransmogrifier provides simple, convention based database migrations for .
 * Microsoft SQL Server Express
 * PostgreSql
 
-It would be fairly trivial to extend it to support Oracle, SQL CE, Firebird, MySql, Postgres or any other RDBMS (like MS Access).
+It would be fairly trivial to extend it to support Oracle, SQL CE, Firebird, MySql or any other RDBMS (like MS Access).
 
 Discovering Migrations
 ----------------------
