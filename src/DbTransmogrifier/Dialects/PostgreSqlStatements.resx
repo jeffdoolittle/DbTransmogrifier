@@ -145,4 +145,7 @@ INSERT INTO "SchemaVersion" VALUES(0);</value>
   <data name="SchemaVersionTableExists" xml:space="preserve">
     <value>SELECT cast(count(*) as bit) FROM information_schema.tables WHERE table_name = 'SchemaVersion';</value>
   </data>
+  <data name="TearDown" xml:space="preserve">
+    <value />
+  </data>
 </root>

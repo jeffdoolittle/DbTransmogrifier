@@ -27,6 +27,7 @@ namespace DbTransmogrifier
             Handlers.Add(new UpToHandler { Transmogrifier = _transmogrifier });
             Handlers.Add(new DownToHandler { Transmogrifier = _transmogrifier });
             Handlers.Add(new TearDownHandler { Transmogrifier = _transmogrifier });
+            Handlers.Add(new DropHandler { Transmogrifier = _transmogrifier });
             Handlers.Add(new CurrentVersionHandler { Transmogrifier = _transmogrifier });
             Handlers.Add(new HelpActionHandler(HelpMessage));
             Handlers.Add(new ErrorActionHandler());
@@ -179,6 +180,16 @@ namespace DbTransmogrifier
             public override void Handle(string[] args)
             {
                 Transmogrifier.TearDown();
+            }
+        }
+
+        private class DropHandler : TransmogrifierHandler
+        {
+            public DropHandler() : base("--drop") { }
+
+            public override void Handle(string[] args)
+            {
+                Transmogrifier.Drop();
             }
         }
 

@@ -64,5 +64,10 @@ namespace DbTransmogrifier.Dialects
         {
             get { return MsSqlStatements.DeleteSchemaVersion; }
         }
+
+        public string TearDown
+        {
+            get { return MsSqlStatements.TearDown; }
+        }
     }
 }
