@@ -10,8 +10,13 @@ Synonyms: transform - alter - change - transmute - metamorphose
 Description
 -----------
 
-The DbTransmogrifier provides simple, convention based database migrations for .NET.  It currently supports Microsoft SQL Server and SQL Server express.  It would be fairly trivial to extend it to support Oracle, SQL CE, Firebird, MySql, Postgres or any other RDBMS (like MS Access).
+The DbTransmogrifier provides simple, convention based database migrations for .NET.  The following RDBMS's are supported:
 
+* Microsoft SQL Server
+* Microsoft SQL Server Express
+* PostgreSql
+
+It would be fairly trivial to extend it to support Oracle, SQL CE, Firebird, MySql, Postgres or any other RDBMS (like MS Access).
 
 Discovering Migrations
 ----------------------
