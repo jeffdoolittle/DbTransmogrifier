@@ -36,8 +36,17 @@ Create a **MigrationAttribute** class in your migration assembly.  This attribut
 
 ### IMigration Interface
 
-DbTransmogrifier looks for an **IMigration** interface with two methods each returning ```IEnumerable<string>```.  One method should be called *Up()* and the other *Down()*.  See the SampleMigrations project for a detailed example.
+DbTransmogrifier looks for an **IMigration** interface with the following definition:
 
+```
+public interface IMigration
+{
+	IEnumerable<string> Up();
+	IEnumerable<string> Down();
+}
+```
+
+See the SampleMigrations project for a detailed example.
 
 Command line options
 ------------------------------------
