@@ -88,6 +88,6 @@ Possible Plans for the Future
 -----------------------------
 
 * Improve build process
-* Support other RDBMS's (Oracle, SQL CE, Firebird, MySql, Postgres, etc.)
+* Support other RDBMS's (Oracle, SQL CE, Firebird, MySql, etc.)
 * Allow for alternative migration discovery conventions (file system based migrations, alternative assembly scanning options, etc.)
 * Create a NuGet installation package
