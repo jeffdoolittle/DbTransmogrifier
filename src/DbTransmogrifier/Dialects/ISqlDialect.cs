@@ -17,5 +17,7 @@
 
         string InsertSchemaVersion { get; }
         string DeleteSchemaVersion { get; }
+
+        string TearDown { get; }
     }
 }

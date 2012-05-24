@@ -39,6 +39,16 @@ namespace DbTransmogrifier
             _dialect.ClearAllPools();
         }
 
+        public void Drop()
+        {
+            using (var masterConnection = _connectionFactory.OpenMaster())
+            {
+                DropTargetDatabase(masterConnection);
+            }
+
+            _dialect.ClearAllPools();
+        }
+
         public void UpToLatest()
         {
             UpTo(long.MaxValue);
@@ -178,16 +188,26 @@ namespace DbTransmogrifier
 
         private long GetCurrentVersion(IDbConnection connection, IDbTransaction transaction = null)
         {
-            var command = connection.CreateCommand(_dialect.CurrentVersion);
-            if (transaction != null) command.Transaction = transaction;
-            return (long)command.ExecuteScalar();
+            using (var command = connection.CreateCommand(_dialect.CurrentVersion))
+            {
+                if (transaction != null) command.Transaction = transaction;
+                return (long)command.ExecuteScalar();
+            }
         }
 
         public void TearDown()
         {
-            using (var masterConnection = _connectionFactory.OpenMaster())
+            using (var targetConnection = _connectionFactory.OpenTarget())
+            using (var transaction = targetConnection.BeginTransaction())
             {
-                DropTargetDatabase(masterConnection);
+                using (var command = targetConnection.CreateCommand(_dialect.TearDown))
+                {
+                    command.Transaction = transaction;
+                    command.ExecuteNonQuery();
+                    Log.InfoFormat("Database {0} torn down.", _databaseName);
+                }
+                
+                transaction.Commit();
             }
 
             _dialect.ClearAllPools();
