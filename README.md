@@ -31,8 +31,22 @@ Defining Migrations in Your Assembly
 
 ### Migration Attribute
 
-Create a **MigrationAttribute** class in your migration assembly.  This attribute should have a **Version** integer property on it which DbTransmogrifier will use to determine the version of each migration.  See the *SampleMigrations* project for a detailed example.
+Create a **MigrationAttribute** class in your migration assembly.  This attribute should have a **Version** integer property on it which DbTransmogrifier will use to determine the version of each migration.  For example:
 
+```
+[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+public class MigrationAttribute : Attribute
+{
+	public MigrationAttribute(int version)
+	{
+		Version = version;
+	}
+
+	public int Version { get; private set; }
+}
+```
+
+See the *SampleMigrations* project for a detailed example.
 
 ### IMigration Interface
 
@@ -46,7 +60,7 @@ public interface IMigration
 }
 ```
 
-See the SampleMigrations project for a detailed example.
+See the *SampleMigrations* project for a detailed example.
 
 Command line options
 ------------------------------------
