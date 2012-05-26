@@ -41,5 +41,10 @@ namespace DbTransmogrifier.Migrations
         {
             return !_migrationTypes.ContainsKey(version) ? null : _migrationTypes[version];
         }
+
+        public long GetMaxAvailableMigrationVersion()
+        {
+            return _migrationTypes.Keys.Max();
+        }
     }
 }

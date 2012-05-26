@@ -11,5 +11,6 @@ namespace DbTransmogrifier.Migrations
         IConnectionFactory ConnectionFactory { get; }
         ISqlDialect Dialect { get; }
         string DatabaseName { get; }
+        long MaxAvailableMigrationVersion { get; }
     }
 }
