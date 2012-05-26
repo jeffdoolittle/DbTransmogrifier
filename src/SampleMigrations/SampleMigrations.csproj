@@ -52,6 +52,7 @@
     </Compile>
     <Compile Include="IMigration.cs" />
     <Compile Include="MigrationAttribute.cs" />
+    <Compile Include="008_MigrationWithGapInSequence.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="002_SecondMigration.cs" />
   </ItemGroup>

@@ -15,6 +15,7 @@ namespace DbTransmogrifier
         private readonly ISqlDialect _dialect;
         private readonly IConnectionFactory _connectionFactory;
         private readonly string _databaseName;
+        private readonly long _maxMigrationVersion;
 
         public Transmogrifier(IMigrationConfiguration configuration)
         {
@@ -22,6 +23,7 @@ namespace DbTransmogrifier
             _dialect = configuration.Dialect;
             _connectionFactory = configuration.ConnectionFactory;
             _databaseName = configuration.DatabaseName;
+            _maxMigrationVersion = configuration.MaxAvailableMigrationVersion;
         }
 
         public void Init()
@@ -51,7 +53,7 @@ namespace DbTransmogrifier
 
         public void UpToLatest()
         {
-            UpTo(long.MaxValue);
+            UpTo(_maxMigrationVersion);
         }
 
         public void UpTo(long version)
@@ -75,7 +77,11 @@ namespace DbTransmogrifier
                 for (long m = currentVersion + 1; m <= version; m++)
                 {
                     var migration = builder.BuildMigration(m);
-                    if (migration == null) break;
+                    if (migration == null)
+                    {
+                        Log.DebugFormat("No migration to apply at version {0}", m);
+                        continue;
+                    }
 
                     Log.DebugFormat("Applying up migration {0} - {1}", migration.Version, migration.Name);
 
@@ -124,7 +130,11 @@ namespace DbTransmogrifier
                 for (long m = currentVersion; m > version; m--)
                 {
                     var migration = builder.BuildMigration(m);
-                    if (migration == null) break;
+                    if (migration == null)
+                    {
+                        Log.DebugFormat("No migration to apply at version {0}", m);
+                        continue;
+                    }
 
                     Log.DebugFormat("Applying down migration {0} - {1}", migration.Version, migration.Name);
 
