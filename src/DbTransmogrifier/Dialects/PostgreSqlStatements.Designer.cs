@@ -144,7 +144,9 @@ namespace DbTransmogrifier.Dialects {
         
         /// <summary>
         ///   Looks up a localized string similar to DROP SCHEMA public CASCADE;
-        ///CREATE SCHEMA public;.
+        ///CREATE SCHEMA public;
+        ///CREATE TABLE &quot;SchemaVersion&quot; (&quot;Version&quot; bigint NOT NULL PRIMARY KEY);
+        ///INSERT INTO &quot;SchemaVersion&quot; VALUES(0);.
         /// </summary>
         internal static string TearDown {
             get {

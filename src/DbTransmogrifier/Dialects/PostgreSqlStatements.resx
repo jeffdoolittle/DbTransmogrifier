@@ -147,6 +147,8 @@ INSERT INTO "SchemaVersion" VALUES(0);</value>
   </data>
   <data name="TearDown" xml:space="preserve">
     <value>DROP SCHEMA public CASCADE;
-CREATE SCHEMA public;</value>
+CREATE SCHEMA public;
+CREATE TABLE "SchemaVersion" ("Version" bigint NOT NULL PRIMARY KEY);
+INSERT INTO "SchemaVersion" VALUES(0);</value>
   </data>
 </root>
