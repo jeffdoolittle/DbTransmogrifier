@@ -84,6 +84,11 @@ DBTransmogrifier supports the following command line options:
 
 * ```--help``` :: Displays command line help. Basically just a dump of available command line options to help jog your memory if you forget them.
 
+Advanced Options
+----------------
+
+DBTransmogrifier allows for the injection if ```IDBConnection``` and ```IDbTransaction``` so you can create migrations that query the database. You can choose between constructor or setter injection.  See the *SampleMigrations* project for example implementations.
+
 Possible Plans for the Future
 -----------------------------
 
@@ -91,3 +96,4 @@ Possible Plans for the Future
 * Support other RDBMS's (Oracle, SQL CE, Firebird, MySql, etc.)
 * Allow for alternative migration discovery conventions (file system based migrations, alternative assembly scanning options, etc.)
 * Create a NuGet installation package
+* Add support for dependency injection so migrations can have their dependencies supplied to them by a container
