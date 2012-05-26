@@ -146,6 +146,7 @@ INSERT INTO "SchemaVersion" VALUES(0);</value>
     <value>SELECT cast(count(*) as bit) FROM information_schema.tables WHERE table_name = 'SchemaVersion';</value>
   </data>
   <data name="TearDown" xml:space="preserve">
-    <value />
+    <value>DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;</value>
   </data>
 </root>

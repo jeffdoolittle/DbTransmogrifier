@@ -1,5 +1,4 @@
-﻿using System;
-using System.Data.Common;
+﻿using System.Data.Common;
 
 namespace DbTransmogrifier.Dialects
 {
@@ -65,11 +64,7 @@ namespace DbTransmogrifier.Dialects
 
         public string TearDown
         {
-            get
-            {
-                throw new NotImplementedException("Tear Down not implemented for PostgreSqlDialect");
-                //return PostgreSqlStatements.TearDown;
-            }
+            get { return PostgreSqlStatements.TearDown; }
         }
     }
 }
