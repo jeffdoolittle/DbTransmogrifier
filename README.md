@@ -18,6 +18,8 @@ The DbTransmogrifier provides simple, convention based database migrations for .
 
 It would be fairly trivial to extend it to support Oracle, SQL CE, Firebird, MySql or any other RDBMS (like MS Access).
 
+DBTransmogrifier is licensed under a BSD license.
+
 Discovering Migrations
 ----------------------
 
