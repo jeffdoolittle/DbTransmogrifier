@@ -65,7 +65,8 @@ namespace DbTransmogrifier.Migrations
                            MigrationBuilderFactory = MigrationBuilderFactory,
                            ConnectionFactory = new ConnectionFactory(providerFactory, masterConnectionString, targetConnectionString),
                            Dialect = dialect,
-                           DatabaseName = dialect.ExtractDatabaseName(targetConnectionString)
+                           DatabaseName = dialect.ExtractDatabaseName(targetConnectionString),
+                           MaxAvailableMigrationVersion = MigrationSourceFactory().GetMaxAvailableMigrationVersion()
                        };
 
             return new Transmogrifier(configuration);
@@ -77,6 +78,7 @@ namespace DbTransmogrifier.Migrations
             public IConnectionFactory ConnectionFactory { get; set; }
             public ISqlDialect Dialect { get; set; }
             public string DatabaseName { get; set; }
+            public long MaxAvailableMigrationVersion { get; set; }
         }
     }
 }
