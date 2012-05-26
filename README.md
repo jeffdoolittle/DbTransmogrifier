@@ -87,7 +87,7 @@ DBTransmogrifier supports the following command line options:
 Advanced Options
 ----------------
 
-DBTransmogrifier allows for the injection if ```IDBConnection``` and ```IDbTransaction``` so you can create migrations that query the database. You can choose between constructor or setter injection.  See the *SampleMigrations* project for example implementations.
+DBTransmogrifier allows for the injection of ```IDBConnection``` and ```IDbTransaction``` so you can create migrations that query the database. You can choose between constructor or setter injection.  See the *SampleMigrations* project for example implementations.
 
 Possible Plans for the Future
 -----------------------------
