@@ -16,28 +16,38 @@ namespace DbTransmogrifier.Migrations
             _migrationTypeSource = migrationTypeSource;
         }
 
-        public Migration BuildMigration(long version)
+        public Migration BuildUpMigration(long version)
+        {
+            return BuildMigration(version, Direction.Up);
+        }
+
+        public Migration BuildDownMigration(long version)
+        {
+            return BuildMigration(version, Direction.Down);
+        }
+
+        private Migration BuildMigration(long version, Direction direction)
         {
             var migrationType = _migrationTypeSource.GetMigrationType(version);
             if (migrationType == null) return null;
-            return Build(version, migrationType);
+            return Build(version, migrationType, direction);
         }
 
-        private Migration Build(long version, Type migrationType)
+        private Migration Build(long version, Type migrationType, Direction direction)
         {
-            if (_dependencies.Count == 0) return SimpleBuild(version, migrationType);
-            else return BuildWithDependencies(version, migrationType);
+            if (_dependencies.Count == 0) return SimpleBuild(version, migrationType, direction);
+            else return BuildWithDependencies(version, migrationType, direction);
         }
 
-        private Migration SimpleBuild(long version, Type migrationType)
+        private Migration SimpleBuild(long version, Type migrationType, Direction direction)
         {
             dynamic migration = Activator.CreateInstance(migrationType);
-            IEnumerable<string> up = migration.Up();
-            IEnumerable<string> down = migration.Down();
-            return new Migration(version, migrationType.Name, up, down);
+            return direction == Direction.Up 
+                ? new Migration(version, migrationType.Name, migration.Up()) 
+                : new Migration(version, migrationType.Name, migration.Down());
         }
 
-        private Migration BuildWithDependencies(long version, Type migrationType)
+        private Migration BuildWithDependencies(long version, Type migrationType, Direction direction)
         {
             var type = migrationType;
             var constructor = type.GetConstructors()
@@ -66,10 +76,15 @@ namespace DbTransmogrifier.Migrations
                 property.SetValue(migration, _dependencies[property.PropertyType], new object[0]);
             }
 
-            IEnumerable<string> up = migration.Up();
-            IEnumerable<string> down = migration.Down();
+            return direction == Direction.Up
+                ? new Migration(version, migrationType.Name, migration.Up())
+                : new Migration(version, migrationType.Name, migration.Down());
+        }
 
-            return new Migration(version, type.Name, up, down);
+        private enum Direction
+        {
+            Up,
+            Down
         }
     }
 }

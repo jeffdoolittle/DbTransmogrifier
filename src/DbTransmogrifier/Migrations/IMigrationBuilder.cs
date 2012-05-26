@@ -2,6 +2,7 @@
 {
     public interface IMigrationBuilder
     {
-        Migration BuildMigration(long version);
+        Migration BuildUpMigration(long version);
+        Migration BuildDownMigration(long version);
     }
 }
