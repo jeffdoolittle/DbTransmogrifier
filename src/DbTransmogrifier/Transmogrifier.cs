@@ -76,7 +76,7 @@ namespace DbTransmogrifier
 
                 for (long m = currentVersion + 1; m <= version; m++)
                 {
-                    var migration = builder.BuildMigration(m);
+                    var migration = builder.BuildUpMigration(m);
                     if (migration == null)
                     {
                         Log.DebugFormat("No migration to apply at version {0}", m);
@@ -85,7 +85,7 @@ namespace DbTransmogrifier
 
                     Log.DebugFormat("Applying up migration {0} - {1}", migration.Version, migration.Name);
 
-                    foreach (var script in migration.Up)
+                    foreach (var script in migration.Scripts)
                     {
                         targetConnection.Execute(script, transaction);
                         Log.DebugFormat("Executed script - {0}", script);
@@ -129,7 +129,7 @@ namespace DbTransmogrifier
 
                 for (long m = currentVersion; m > version; m--)
                 {
-                    var migration = builder.BuildMigration(m);
+                    var migration = builder.BuildDownMigration(m);
                     if (migration == null)
                     {
                         Log.DebugFormat("No migration to apply at version {0}", m);
@@ -138,7 +138,7 @@ namespace DbTransmogrifier
 
                     Log.DebugFormat("Applying down migration {0} - {1}", migration.Version, migration.Name);
 
-                    foreach (var script in migration.Down)
+                    foreach (var script in migration.Scripts)
                     {
                         targetConnection.Execute(script, transaction);
                         Log.DebugFormat("Executed script - {0}", script);
