@@ -143,7 +143,8 @@ namespace DbTransmogrifier.Dialects {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to DROP SCHEMA public CASCADE;
+        ///CREATE SCHEMA public;.
         /// </summary>
         internal static string TearDown {
             get {
