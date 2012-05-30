@@ -94,8 +94,7 @@ DBTransmogrifier allows for the injection of ```IDBConnection``` and ```IDbTrans
 Possible Plans for the Future
 -----------------------------
 
-* Improve build process
+* Create a NuGet installation package
 * Support other RDBMS's (Oracle, SQL CE, Firebird, MySql, etc.)
 * Allow for alternative migration discovery conventions (file system based migrations, alternative assembly scanning options, etc.)
-* Create a NuGet installation package
 * Add support for dependency injection so migrations can have their dependencies supplied to them by a container
