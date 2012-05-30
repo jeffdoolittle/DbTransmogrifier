@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <UsingTask AssemblyFile="$(MSBuildProjectDirectory)\..\src\packages\xunit.1.9.0.1566\lib\xunit.runner.msbuild.dll" TaskName="Xunit.Runner.MSBuild.xunit" />
+  
+  <Target Name="Build">
+    <MSBuild Projects="..\src\DBTransmogrifier.sln" Properties="Configuration=Debug"/>
+    <MSBuild Projects="..\src\DBTransmogrifier.sln" Properties="Configuration=Release"/>
+  </Target>
+  
+  <Target Name="Test">
+    <Xunit.Runner.MSBuild.xunit Assembly="$(MSBuildProjectDirectory)\..\src\DBTransmogrifier.Specs\bin\Release\DBTransmogrifier.Specs.dll" />
+  </Target>
+</Project>
