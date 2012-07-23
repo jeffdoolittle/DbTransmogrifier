@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace DbTransmogrifier.Database
+namespace DbTransmogrifier
 {
     public static class DbConnectionExtensions
     {

@@ -50,7 +50,7 @@
     <Compile Include="Migrations\IMigrationConfiguration.cs" />
     <Compile Include="Migrations\MigrationConfigurer.cs" />
     <Compile Include="Database\ConnectionFactory.cs" />
-    <Compile Include="Database\DbConnectionExtensions.cs" />
+    <Compile Include="Extensions\DbConnectionExtensions.cs" />
     <Compile Include="Migrations\DefaultMigrationBuilder.cs" />
     <Compile Include="Migrations\DefaultMigrationTypeSource.cs" />
     <Compile Include="Dialects\ISqlDialect.cs" />
@@ -68,6 +68,7 @@
     <Compile Include="Dialects\MsSqlDialect.cs" />
     <Compile Include="Migrations\Migration.cs" />
     <Compile Include="Dialects\SqlDialectResolver.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Processor.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
