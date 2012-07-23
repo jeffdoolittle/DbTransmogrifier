@@ -21,7 +21,7 @@ namespace DbTransmogrifier.Migrations
                 .Select(x=> Assembly.LoadFrom(x.FullName))
                 .ToList();
 
-            var types = assemblies.SelectMany(x => x.GetTypes()).ToList();
+            var types = assemblies.SelectMany(x => x.GetLoadableTypes()).ToList();
 
             var migrationAttributeType = types.SingleOrDefault(x => x.Name == "MigrationAttribute");
             var migrationInterfaceType = types.SingleOrDefault(x => x.Name == "IMigration");
