@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("DbTransmogrifier")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A flexible, configuration, dirt simple database migration tool for .NET applications")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Jeff Doolittle")]
 [assembly: AssemblyProduct("DbTransmogrifier")]
 [assembly: AssemblyCopyright("Copyright ©  2012")]
 [assembly: AssemblyTrademark("")]
