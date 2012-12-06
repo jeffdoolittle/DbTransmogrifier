@@ -1,2 +1,3 @@
 *.Resharper
-output/
+output
+src/packages
