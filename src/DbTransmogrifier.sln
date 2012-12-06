@@ -16,6 +16,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{AF7C178D
 		..\build\DBTransmogrifier.proj = ..\build\DBTransmogrifier.proj
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{4BFC750B-AA4A-4B2E-9DA7-D97B327736EF}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,8 +56,8 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{18FBFDB1-DE4A-4237-9B13-11DAEABBE8C8} = {6E1CF121-BF88-46A4-AEA1-D785AA9CE6A1}
 		{7844313F-A470-4117-85C1-5EBF8F29BD80} = {6E1CF121-BF88-46A4-AEA1-D785AA9CE6A1}
+		{18FBFDB1-DE4A-4237-9B13-11DAEABBE8C8} = {6E1CF121-BF88-46A4-AEA1-D785AA9CE6A1}
 		{3431F8D6-9ABF-49B0-BD66-BB82F9D6A25D} = {7629DB5B-59D1-489E-BAA7-F7AC01836F21}
 	EndGlobalSection
 EndGlobal
