@@ -72,7 +72,7 @@ DBTransmogrifier supports the following command line options:
 ### Database level commands
 
 * ```--init``` :: Creates the target database if it does not exist. Creates the "SchemaVersion" table if it does not exist.
-* ```--tear-down``` :: Deletes all database Tables, Constraints, Views, Functions and Stored Procedures. Resets "SchemaVersion" table to version 0 (zero).  Basically restores the databse to it's initialized state.
+* ```--tear-down``` :: Deletes all database Tables, Constraints, Views, Functions and Stored Procedures. Resets "SchemaVersion" table to version 0 (zero).  Basically restores the database to its initialized state.
 * ```--drop``` :: Drops the database. No warnings, no redo, no cancel.  Be careful! You've been warned.
 
 ### Migration commands
@@ -85,6 +85,59 @@ DBTransmogrifier supports the following command line options:
 ### Other commands
 
 * ```--help``` :: Displays command line help. Basically just a dump of available command line options to help jog your memory if you forget them.
+
+Configuration
+-------------
+
+### Default Configuration
+
+By default, DbTransmogrifer will use your app.config file to load up the following settings:
+
+* Database Provider
+* Master Connection String
+* Target Connection String
+
+Example:
+
+	<appSettings>
+		<add key="ProviderInvariantName" value="System.Data.SqlClient"/>
+	</appSettings>
+	<connectionStrings>
+		<clear/>
+		<add name="Target" connectionString="Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=YOUR_TARGET_DATABASE_NAME;Data Source=.\SQLEXPRESS"/>
+		<add name="Master" connectionString="Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=master;Data Source=.\SQLEXPRESS"/>
+	</connectionStrings>
+
+### Overriding the Default Configuration
+
+In order to override the defaults, you'll need to reference the DbTransmogrifier assembly in a project of your own creation (for example, a Console app).  The ```MigrationConfigurer``` class provides the following extensibility points for you to provide your own configuration options:
+
+* ```ProviderNameSource```: A function that returns the name of the database provider you will be using (```System.Data.SqlClient``` is the default).
+* ```MasterConnectionStringSource```: A function that returns a valid connection to your database server. This connection should *not* reference your target database (the value from app.config is the default).
+* ```TargetConnectionStringSource```: A function that returns as valid connection to your target database (the value from app.config is the default).
+* ```MigrationSourceFactory```: A function that returns an implementation of ```IMigrationSource``` (```DefaultMigrationTypeSource``` is the default).
+* ```MigrationBuilderFactory```: A function that processes the results returned from your ```IMigrationTypeSource``` and can build each migration, injecting any necessary dependencies into them (```DefaultMigrationBuilder``` is the default).
+
+Example:
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            MigrationConfigurer.ProviderNameSource = () => "System.Data.SqlClient";
+            MigrationConfigurer.MasterConnectionStringSource = () => "Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=master;Data Source=.";
+            MigrationConfigurer.TargetConnectionStringSource = () => "Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=LotpathPipeline;Data Source=.";
+
+            var transmogrifier = MigrationConfigurer
+               .Configure()
+               .WithDefaultMigrationBuilderFactory()
+               .WithDefaultMigrationSourceFactory()
+               .BuildTransmogrifier();
+
+            var processor = new Processor(transmogrifier, args);
+            processor.Process();
+        }
+    }
 
 Advanced Options
 ----------------
