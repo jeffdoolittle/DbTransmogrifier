@@ -18,7 +18,9 @@ The DbTransmogrifier provides simple, convention based database migrations for .
 
 It would be fairly trivial to extend it to support Oracle, SQL CE, Firebird, MySql or any other RDBMS (like MS Access).
 
-DBTransmogrifier is licensed under a BSD license.
+DbTransmogrifier is licensed under a BSD license.
+
+DbTransmogrifier is also available as a [NuGet package](http://nuget.org/packages/DbTransmogrifier/).
 
 Discovering Migrations
 ----------------------
@@ -62,12 +64,12 @@ public interface IMigration
 }
 ```
 
-Any class implementing the ```IMigration``` interface, and decorated with the ```MigrationAttribute``` will be processed as a migration by the DBTransmogrifier. See the *SampleMigrations* project for a detailed example.
+Any class implementing the ```IMigration``` interface, and decorated with the ```MigrationAttribute``` will be processed as a migration by the DbTransmogrifier. See the *SampleMigrations* project for a detailed example.
 
 Command line options
 ------------------------------------
 
-DBTransmogrifier supports the following command line options:
+DbTransmogrifier supports the following command line options:
 
 ### Database level commands
 
@@ -89,7 +91,7 @@ DBTransmogrifier supports the following command line options:
 Advanced Options
 ----------------
 
-DBTransmogrifier allows for the injection of ```IDBConnection``` and ```IDbTransaction``` so you can create migrations that query your database. You can choose between constructor or setter injection.  See the *SampleMigrations* project for example implementations.
+DbTransmogrifier allows for the injection of ```IDbConnection``` and ```IDbTransaction``` so you can create migrations that query your database. You can choose between constructor or setter injection.  See the *SampleMigrations* project for example implementations.
 
 This functionality is implemented by the ```DefaultMigrationBuilder```. If you want to create your own custom implementation of ```IMigrationBuilder``` you'll have to do your own dependency injection.  See the next section for configuration options.
 
@@ -149,7 +151,6 @@ Example:
 Possible Plans for the Future
 -----------------------------
 
-* Create a NuGet installation package
 * Support other RDBMS's (Oracle, SQL CE, Firebird, MySql, etc.)
 * Allow for alternative migration discovery conventions (file system based migrations, alternative assembly scanning options, etc.)
 * Add support for dependency injection so migrations can have their dependencies supplied to them by a container
