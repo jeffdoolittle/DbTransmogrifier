@@ -133,7 +133,7 @@ Example:
         {
             MigrationConfigurer.ProviderNameSource = () => "System.Data.SqlClient";
             MigrationConfigurer.MasterConnectionStringSource = () => "Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=master;Data Source=.";
-            MigrationConfigurer.TargetConnectionStringSource = () => "Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=LotpathPipeline;Data Source=.";
+            MigrationConfigurer.TargetConnectionStringSource = () => "Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=YOUR_TARGET_DATABASE_NAME;Data Source=.";
 
             var transmogrifier = MigrationConfigurer
                .Configure()
