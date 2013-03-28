@@ -91,7 +91,7 @@ Advanced Options
 
 DBTransmogrifier allows for the injection of ```IDBConnection``` and ```IDbTransaction``` so you can create migrations that query your database. You can choose between constructor or setter injection.  See the *SampleMigrations* project for example implementations.
 
-This functionality is implemented by the ```DefaultMigrationBuilder```. If you want to create your own custom implementation if ```IMigrationBuilder``` you'll have to do your own dependency injection.  See the next section for configuration options.
+This functionality is implemented by the ```DefaultMigrationBuilder```. If you want to create your own custom implementation of ```IMigrationBuilder``` you'll have to do your own dependency injection.  See the next section for configuration options.
 
 Configuration
 -------------
