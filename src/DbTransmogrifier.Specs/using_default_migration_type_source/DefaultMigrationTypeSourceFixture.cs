@@ -11,7 +11,7 @@ namespace DbTransmogrifier.Specs.using_default_migration_type_source
 
         protected DefaultMigrationTypeSourceFixture()
         {
-            ClassUnderTest = new DefaultMigrationTypeSource();
+            ClassUnderTest = new DefaultMigrationTypeSource(x => x.FullName.Contains("SampleMigrations"));
         }
 
         protected void AssertTypeDecoratedWithMigrationAttributeAndVersionNumber(Type type, long expectedVersion)
