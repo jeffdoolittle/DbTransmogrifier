@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data.Common;
+using System.Reflection;
 using DbTransmogrifier.Database;
 using DbTransmogrifier.Dialects;
 using DbTransmogrifier.Logging;
@@ -18,10 +19,10 @@ namespace DbTransmogrifier.Migrations
         public static Func<string> MasterConnectionStringSource;
         public static Func<string> TargetConnectionStringSource;
 
-        public static MigrationConfigurer ConfigureWithDefaults()
+        public static MigrationConfigurer ConfigureWithDefaults(Func<Assembly, bool> assemblyFilter = null)
         {
             MigrationBuilderFactory = dependencies => new DefaultMigrationBuilder(dependencies, MigrationSourceFactory());
-            MigrationSourceFactory = () => new DefaultMigrationTypeSource();
+            MigrationSourceFactory = () => new DefaultMigrationTypeSource(assemblyFilter);
             ProviderNameSource = () => ConfigurationManager.AppSettings["ProviderInvariantName"] ?? "System.Data.SqlClient";
             MasterConnectionStringSource = () => ConfigurationManager.ConnectionStrings["Master"].ConnectionString;
             TargetConnectionStringSource = () => ConfigurationManager.ConnectionStrings["Target"].ConnectionString;
