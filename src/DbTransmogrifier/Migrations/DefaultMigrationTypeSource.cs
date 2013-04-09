@@ -11,14 +11,23 @@ namespace DbTransmogrifier.Migrations
         private readonly IDictionary<long, Type> _migrationTypes = new Dictionary<long, Type>();
 
         public DefaultMigrationTypeSource()
+            : this(x => true)
         {
+        }
+
+        public DefaultMigrationTypeSource(Func<Assembly, bool> filter)
+        {
+            if (filter == null)
+                filter = x => true;
+
             var appAssembly = Assembly.GetExecutingAssembly();
             var appName = appAssembly.GetName().Name;
 
-            var assemblies = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.exe").Select(x=>new FileInfo(x))
+            var assemblies = Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.exe").Select(x => new FileInfo(x))
                 .Union(Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll").Select(x => new FileInfo(x)))
-                .Where(x=>!x.Name.Contains(appName))
-                .Select(x=> Assembly.LoadFrom(x.FullName))
+                .Where(x => !x.Name.Contains(appName))
+                .Select(x => Assembly.LoadFrom(x.FullName))
+                .Where(filter)
                 .ToList();
 
             var types = assemblies.SelectMany(x => x.GetLoadableTypes()).ToList();
@@ -45,7 +54,7 @@ namespace DbTransmogrifier.Migrations
         public long GetMaxAvailableMigrationVersion()
         {
             var keys = _migrationTypes.Keys;
-            if (keys.Count == 0) 
+            if (keys.Count == 0)
                 return 0;
             return keys.Max();
         }
