@@ -55,6 +55,10 @@
     <Compile Include="using_default_migration_type_source\when_resolving_migration_type_for_max_available_version.cs" />
     <Compile Include="using_default_migration_type_source\when_resolving_migration_type_for_version_one.cs" />
     <Compile Include="using_default_migration_type_source\when_retrieving_max_available_version.cs" />
+    <Compile Include="using_processor_with_defaults\ProcessorFixture.cs" />
+    <Compile Include="using_processor_with_defaults\when_executing_processor_with_empty_string_as_argument.cs" />
+    <Compile Include="using_processor_with_defaults\when_executing_processor_with_null_arguments.cs" />
+    <Compile Include="using_processor_with_defaults\when_executing_processor_with_zero_length_array_arguments.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

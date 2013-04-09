@@ -37,7 +37,10 @@ namespace DbTransmogrifier
         {
             try
             {
-                Handlers.First(x => x.CanHandle(_args)).Handle(_args);
+                if (_args.Length == 0)
+                    Handlers.Last().Handle(_args);
+                else
+                    Handlers.First(x => x.CanHandle(_args)).Handle(_args);
             }
             catch (Exception ex)
             {
