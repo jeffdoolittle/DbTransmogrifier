@@ -277,9 +277,15 @@ namespace DbTransmogrifier
                 return;
             }
 
-            using (var createCommand = connection.CreateCommand(string.Format(_dialect.DropDatabase, _databaseName)))
+            using (var disconnectCommand = connection.CreateCommand(string.Format(_dialect.DropAllConnections), _databaseName))
             {
-                createCommand.ExecuteNonQuery();
+                disconnectCommand.ExecuteNonQuery();
+                Log.InfoFormat("Databases connections dropped for {0}.", _databaseName);
+            }
+
+            using (var dropCommand = connection.CreateCommand(string.Format(_dialect.DropDatabase, _databaseName)))
+            {
+                dropCommand.ExecuteNonQuery();
                 Log.InfoFormat("Database {0} dropped.", _databaseName);
             }
         }

@@ -24,8 +24,8 @@ namespace DbTransmogrifier.Migrations
             MigrationBuilderFactory = dependencies => new DefaultMigrationBuilder(dependencies, MigrationSourceFactory());
             MigrationSourceFactory = () => new DefaultMigrationTypeSource(assemblyFilter);
             ProviderNameSource = () => ConfigurationManager.AppSettings["ProviderInvariantName"] ?? "System.Data.SqlClient";
-            MasterConnectionStringSource = () => ConfigurationManager.ConnectionStrings["Master"].ConnectionString;
-            TargetConnectionStringSource = () => ConfigurationManager.ConnectionStrings["Target"].ConnectionString;
+            MasterConnectionStringSource = () => ConfigurationManager.ConnectionStrings.GetConnectionStringOrEmpty("Master");
+            TargetConnectionStringSource = () => ConfigurationManager.ConnectionStrings.GetConnectionStringOrEmpty("Target");
             return new MigrationConfigurer();
         }
 

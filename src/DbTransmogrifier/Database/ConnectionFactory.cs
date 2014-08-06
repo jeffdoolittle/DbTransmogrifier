@@ -24,7 +24,15 @@ namespace DbTransmogrifier.Database
 
         public IDbConnection OpenMaster()
         {
+            if (string.IsNullOrEmpty(_masterConnectionString))
+            {
+                throw new DbTransmogrifierException("Master connection string required for this operation");
+            }
             var connection = _dbProviderFactory.CreateConnection();
+            if (connection == null)
+            {
+                throw new DbTransmogrifierException("Failed to create a Master connection using the specified DbProviderFactory: " + _dbProviderFactory.GetType().Name);
+            }
             connection.ConnectionString = _masterConnectionString;
             connection.Open();
             return connection;
@@ -32,7 +40,15 @@ namespace DbTransmogrifier.Database
 
         public IDbConnection OpenTarget()
         {
+            if (string.IsNullOrEmpty(_targetConnectionString))
+            {
+                throw new DbTransmogrifierException("Target connection string required for this operation");
+            }
             var connection = _dbProviderFactory.CreateConnection();
+            if (connection == null)
+            {
+                throw new DbTransmogrifierException("Failed to create a Target connection using the specified DbProviderFactory: " + _dbProviderFactory.GetType().Name);
+            }
             connection.ConnectionString = _targetConnectionString;
             connection.Open();
             return connection;

@@ -133,6 +133,14 @@ INSERT INTO [SchemaVersion] VALUES(0);</value>
   <data name="DeleteSchemaVersion" xml:space="preserve">
     <value>DELETE FROM [SchemaVersion] WHERE [Version] = @0;</value>
   </data>
+  <data name="DropAllConnections" xml:space="preserve">
+    <value>DECLARE @kill varchar(8000) = '';
+SELECT @kill = @kill + 'kill ' + CONVERT(varchar(5), spid) + ';'
+FROM master..sysprocesses 
+WHERE dbid = db_id('{0}')
+
+EXEC(@kill);</value>
+  </data>
   <data name="DropDatabase" xml:space="preserve">
     <value>DROP DATABASE {0};</value>
   </data>

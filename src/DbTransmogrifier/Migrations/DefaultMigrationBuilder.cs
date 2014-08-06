@@ -42,9 +42,9 @@ namespace DbTransmogrifier.Migrations
         private Migration SimpleBuild(long version, Type migrationType, Direction direction)
         {
             dynamic migration = Activator.CreateInstance(migrationType);
-            return direction == Direction.Up 
-                ? new Migration(version, migrationType.Name, migration.Up()) 
-                : new Migration(version, migrationType.Name, migration.Down());
+            return direction == Direction.Up
+                ? new Migration(version, migrationType.Name, GetUpScripts(migration))
+                : new Migration(version, migrationType.Name, GetDownScripts(migration));
         }
 
         private Migration BuildWithDependencies(long version, Type migrationType, Direction direction)
@@ -77,8 +77,18 @@ namespace DbTransmogrifier.Migrations
             }
 
             return direction == Direction.Up
-                ? new Migration(version, migrationType.Name, migration.Up())
-                : new Migration(version, migrationType.Name, migration.Down());
+                ? new Migration(version, migrationType.Name, GetUpScripts(migration))
+                : new Migration(version, migrationType.Name, GetDownScripts(migration));
+        }
+
+        private IEnumerable<string> GetUpScripts(dynamic migration)
+        {
+            return migration.Up();
+        }
+
+        private IEnumerable<string> GetDownScripts(dynamic migration)
+        {
+            return migration.Down();
         }
 
         private enum Direction

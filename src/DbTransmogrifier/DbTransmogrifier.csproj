@@ -41,12 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database\DbTransmogrifierException.cs" />
     <Compile Include="Dialects\PostgreSqlStatements.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>PostgreSqlStatements.resx</DependentUpon>
     </Compile>
     <Compile Include="Logging\LogConfigurer.cs" />
+    <Compile Include="Migrations\ConnectionStringSettingsCollectionExtensions.cs" />
     <Compile Include="Migrations\IMigrationConfiguration.cs" />
     <Compile Include="Migrations\MigrationConfigurer.cs" />
     <Compile Include="Database\ConnectionFactory.cs" />

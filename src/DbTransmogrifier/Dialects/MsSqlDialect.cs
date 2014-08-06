@@ -20,6 +20,11 @@ namespace DbTransmogrifier.Dialects
             SqlConnection.ClearAllPools();
         }
 
+        public string DropAllConnections
+        {
+            get { return MsSqlStatements.DropAllConnections; }
+        }
+
         public string CurrentVersion
         {
             get { return MsSqlStatements.CurrentVersion; }

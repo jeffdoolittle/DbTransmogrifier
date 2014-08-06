@@ -17,6 +17,11 @@ namespace DbTransmogrifier.Dialects
         {
         }
 
+        public string DropAllConnections
+        {
+            get { return PostgreSqlStatements.DropAllConnections; }
+        }
+
         public string CurrentVersion
         {
             get { return PostgreSqlStatements.CurrentVersion; }

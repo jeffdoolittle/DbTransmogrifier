@@ -133,6 +133,14 @@ INSERT INTO "SchemaVersion" VALUES(0);</value>
   <data name="DeleteSchemaVersion" xml:space="preserve">
     <value>DELETE FROM "SchemaVersion" WHERE "Version" = @0;</value>
   </data>
+  <data name="DropAllConnections" xml:space="preserve">
+    <value>SELECT
+    pg_terminate_backend (pg_stat_activity.pid)
+FROM
+    pg_stat_activity
+WHERE
+    pg_stat_activity.datname = "{0}";</value>
+  </data>
   <data name="DropDatabase" xml:space="preserve">
     <value>DROP DATABASE "{0}";</value>
   </data>

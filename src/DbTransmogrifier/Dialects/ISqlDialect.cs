@@ -5,6 +5,8 @@
         string ExtractDatabaseName(string connectionString);
         void ClearAllPools();
 
+        string DropAllConnections { get; }
+
         string CurrentVersion { get; }
 
         string DatabaseExists { get; }
