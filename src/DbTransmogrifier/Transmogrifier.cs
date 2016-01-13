@@ -277,7 +277,7 @@ namespace DbTransmogrifier
                 return;
             }
 
-            using (var disconnectCommand = connection.CreateCommand(string.Format(_dialect.DropAllConnections), _databaseName))
+            using (var disconnectCommand = connection.CreateCommand(string.Format(_dialect.DropAllConnections, _databaseName)))
             {
                 disconnectCommand.ExecuteNonQuery();
                 Log.InfoFormat("Databases connections dropped for {0}.", _databaseName);
