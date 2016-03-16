@@ -33,38 +33,42 @@ You do not have to reference the DbTransmogrifier assembly from your project in 
 Defining Migrations in Your Assembly
 ------------------------------------
 
-### Migration Attribute
+### Migration Interface and Attribute
 
-Create a **MigrationAttribute** class in your migration assembly.  This attribute should have a **Version** integer property on it which DbTransmogrifier will use to determine the version of each migration.  For example:
+DbTransmogrifier is designed so you do not have to take a dependency on the DbTransmogrifier assembly in your own migration definition assembly. DbTransmogrifier will scan your assembly to discover migrations that match particular signatures. The simplest way to wire things up is to create a `Migration.cs` file in assembly where you will build your migrations and add the following code to the file:
 
 ```
-[AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
-public class MigrationAttribute : Attribute
-{
-	public MigrationAttribute(int version)
-	{
-		Version = version;
-	}
+    public interface IMigration
+    {
+        IEnumerable<string> Up();
+        IEnumerable<string> Down();
+    }
 
-	public int Version { get; private set; }
-}
+    [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+    public class MigrationAttribute : Attribute
+    {
+        public MigrationAttribute(int version)
+        {
+            Version = version;
+        }
+
+        public int Version { get; private set; }
+    }
+
+    public abstract class Migration : IMigration
+    {
+        public abstract IEnumerable<string> Up();
+
+        public virtual IEnumerable<string> Down()
+        {
+            yield break;
+        }
+    }
 ```
+
+DbTransmogrifier looks in your assembly for any classes that implement the `IMigration` interface and are decorated with the `MigrationAttribute`
 
 See the *SampleMigrations* project for a detailed example.
-
-### IMigration Interface
-
-DbTransmogrifier looks for an **IMigration** interface with the following definition:
-
-```
-public interface IMigration
-{
-	IEnumerable<string> Up();
-	IEnumerable<string> Down();
-}
-```
-
-Any class implementing the ```IMigration``` interface, and decorated with the ```MigrationAttribute``` will be processed as a migration by the DbTransmogrifier. See the *SampleMigrations* project for a detailed example.
 
 Command line options
 ------------------------------------

@@ -108,9 +108,13 @@ namespace DbTransmogrifier
             public void Handle(string[] args)
             {
                 if (args.Length == 0)
+                {
                     Log.Error("No action specified");
+                }
                 else
-                    Log.Error("Unknown action " + args[0]);
+                {
+                    Log.ErrorFormat("Unknown action {0}", args[0]);
+                }
             }
         }
 

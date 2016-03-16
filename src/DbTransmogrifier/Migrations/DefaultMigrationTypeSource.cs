@@ -35,7 +35,7 @@ namespace DbTransmogrifier.Migrations
             var migrationAttributeType = types.SingleOrDefault(x => x.Name == "MigrationAttribute");
             var migrationInterfaceType = types.SingleOrDefault(x => x.Name == "IMigration");
 
-            var migrationTypes = types.Where(x => x.GetInterfaces().Contains(migrationInterfaceType));
+            var migrationTypes = types.Where(x => !x.IsAbstract && x.GetInterfaces().Contains(migrationInterfaceType));
 
             foreach (var type in migrationTypes)
             {
