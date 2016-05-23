@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.Configuration;
+using System.Data;
 
 namespace DbTransmogrifier
 {
@@ -8,6 +9,7 @@ namespace DbTransmogrifier
         {
             var command = connection.CreateCommand();
             command.CommandText = commandText;
+            command.CommandTimeout = GetDbCommandTimeout();
             if (parameters != null && parameters.Length > 0)
                 for (int p = 0; p < parameters.Length; p++)
                 {
@@ -26,6 +28,13 @@ namespace DbTransmogrifier
                 command.Transaction = transaction;
                 command.ExecuteNonQuery();
             }
+        }
+
+        private static int GetDbCommandTimeout()
+        {
+            var configuredValue = ConfigurationManager.AppSettings["DbCommandTimeoutSeconds"];
+            int timeout;
+            return int.TryParse(configuredValue, out timeout) ? timeout : 600;
         }
     }
 }
