@@ -1,5 +1,4 @@
-﻿DbTransmogrifier
-================
+﻿# DbTransmogrifier
 
 **trans·mog·ri·fy** */transˈmägrəˌfī/*
 
@@ -7,8 +6,7 @@ Verb: Transform, esp. in a surprising or magical manner.
 
 Synonyms: transform - alter - change - transmute - metamorphose
 
-Description
------------
+## Description
 
 The DbTransmogrifier provides simple, convention based database migrations for .NET.  The following RDBMS's are supported:
 
@@ -18,26 +16,23 @@ The DbTransmogrifier provides simple, convention based database migrations for .
 
 It would be fairly trivial to extend it to support Oracle, SQL CE, Firebird, MySql or any other RDBMS (like MS Access).
 
-DbTransmogrifier is licensed under a BSD license.
+DbTransmogrifier is licensed under the [MIT license](./license).
 
 DbTransmogrifier is also available as a [NuGet package](http://nuget.org/packages/DbTransmogrifier/).
 
-Discovering Migrations
-----------------------
+## Discovering Migrations
 
 DbTransmogrifier currently supports one simple convention for discovering migrations.  It looks for classes that implement an interface called "IMigration" decorated with a MigrationAttribute.  See [Defining Migrations in Your Assembly](#defining-migrations-in-your-assembly) for more details.
 
 You do not have to reference the DbTransmogrifier assembly from your project in order to process migrations.  Currently DbTransmogrifier comes with a single, simple convention for discovering and applying your migrations.  Simply place the DbTransmogrifier executable in the same directory as the assembly which contains your migrations.
 
-
-Defining Migrations in Your Assembly
-------------------------------------
+## Defining Migrations in Your Assembly
 
 ### Migration Interface and Attribute
 
 DbTransmogrifier is designed so you do not have to take a dependency on the DbTransmogrifier assembly in your own migration definition assembly. DbTransmogrifier will scan your assembly to discover migrations that match particular signatures. The simplest way to wire things up is to create a `Migration.cs` file in assembly where you will build your migrations and add the following code to the file:
 
-```
+```csharp
     public interface IMigration
     {
         IEnumerable<string> Up();
@@ -70,8 +65,7 @@ DbTransmogrifier looks in your assembly for any classes that implement the `IMig
 
 See the *SampleMigrations* project for a detailed example.
 
-Command line options
-------------------------------------
+## Command line options
 
 DbTransmogrifier supports the following command line options:
 
@@ -92,15 +86,13 @@ DbTransmogrifier supports the following command line options:
 
 * ```--help``` :: Displays command line help. Basically just a dump of available command line options to help jog your memory if you forget them.
 
-Advanced Options
-----------------
+## Advanced Options
 
 DbTransmogrifier allows for the injection of ```IDbConnection``` and ```IDbTransaction``` so you can create migrations that query your database. You can choose between constructor or setter injection.  See the *SampleMigrations* project for example implementations.
 
 This functionality is implemented by the ```DefaultMigrationBuilder```. If you want to create your own custom implementation of ```IMigrationBuilder``` you'll have to do your own dependency injection.  See the next section for configuration options.
 
-Configuration
--------------
+## Configuration
 
 ### Default Configuration
 
@@ -112,14 +104,16 @@ By default, DbTransmogrifer will use your app.config file to load up the followi
 
 Example:
 
-	<appSettings>
-		<add key="ProviderInvariantName" value="System.Data.SqlClient"/>
-	</appSettings>
-	<connectionStrings>
-		<clear/>
-		<add name="Target" connectionString="Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=YOUR_TARGET_DATABASE_NAME;Data Source=.\SQLEXPRESS"/>
-		<add name="Master" connectionString="Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=master;Data Source=.\SQLEXPRESS"/>
-	</connectionStrings>
+```xml
+  <appSettings>
+    <add key="ProviderInvariantName" value="System.Data.SqlClient"/>
+  </appSettings>
+  <connectionStrings>
+    <clear/>
+      <add name="Target" connectionString="Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=YOUR_TARGET_DATABASE_NAME;Data Source=.\SQLEXPRESS"/>
+      <add name="Master" connectionString="Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=master;Data Source=.\SQLEXPRESS"/>
+  </connectionStrings>
+```
 
 ### Overriding the Default Configuration
 
@@ -133,6 +127,7 @@ In order to override the defaults, you'll need to reference the DbTransmogrifier
 
 Example:
 
+```csharp
     class Program
     {
         static void Main(string[] args)
@@ -151,9 +146,9 @@ Example:
             processor.Process();
         }
     }
+```
 
-Possible Plans for the Future
------------------------------
+## Possible Plans for the Future
 
 * Support other RDBMS's (Oracle, SQL CE, Firebird, MySql, etc.)
 * Allow for alternative migration discovery conventions (file system based migrations, alternative assembly scanning options, etc.)

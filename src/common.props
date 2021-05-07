@@ -1,0 +1,26 @@
+<Project>
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <!-- <Nullable>enable</Nullable> -->
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>Jeff Doolittle</Authors>
+    <Description>A flexible, configurable, dirt simple database migration tool for dotnet applications.</Description>
+    <Product>DBTransmogrifier</Product>
+    <Copyright>Copyright © 2012-2021 Jeff Doolittle</Copyright>
+    <RepositoryUrl>https://github.com/jeffdoolittle/DBTransmogrifier</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <Import Project=".\version.props" />
+
+  <PropertyGroup Label="Configure assembly names and namespaces">
+  <!-- <AssemblyName>$(SolutionName).$(MSBuildProjectName)</AssemblyName> -->
+  <AssemblyName>$(MSBuildProjectName)</AssemblyName>
+  <RootNamespace>$(AssemblyName)</RootNamespace>
+  </PropertyGroup>
+
+</Project>

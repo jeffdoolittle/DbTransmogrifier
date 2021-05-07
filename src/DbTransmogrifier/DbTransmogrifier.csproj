@@ -1,90 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{18FBFDB1-DE4A-4237-9B13-11DAEABBE8C8}</ProjectGuid>
+    <RootNamespace>DBTransmogrifier</RootNamespace>
     <OutputType>Exe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DbTransmogrifier</RootNamespace>
-    <AssemblyName>DbTransmogrifier</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>..\..\build\output\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\..\build\output\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Database\DbTransmogrifierException.cs" />
-    <Compile Include="Dialects\PostgreSqlStatements.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>PostgreSqlStatements.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Logging\LogConfigurer.cs" />
-    <Compile Include="Migrations\ConnectionStringSettingsCollectionExtensions.cs" />
-    <Compile Include="Migrations\IMigrationConfiguration.cs" />
-    <Compile Include="Migrations\MigrationConfigurer.cs" />
-    <Compile Include="Database\ConnectionFactory.cs" />
-    <Compile Include="Extensions\DbConnectionExtensions.cs" />
-    <Compile Include="Migrations\DefaultMigrationBuilder.cs" />
-    <Compile Include="Migrations\DefaultMigrationTypeSource.cs" />
-    <Compile Include="Dialects\ISqlDialect.cs" />
-    <Compile Include="Dialects\MsSqlStatements.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>MsSqlStatements.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Dialects\PostgreSqlDialect.cs" />
-    <Compile Include="Migrations\IMigrationBuilder.cs" />
-    <Compile Include="Migrations\IMigrationTypeSource.cs" />
-    <Compile Include="Logging\DefaultLog.cs" />
-    <Compile Include="Logging\ILog.cs" />
-    <Compile Include="Logging\LoggerFactory.cs" />
-    <Compile Include="Dialects\MsSqlDialect.cs" />
-    <Compile Include="Migrations\Migration.cs" />
-    <Compile Include="Dialects\SqlDialectResolver.cs" />
-    <Compile Include="Extensions\TypeExtensions.cs" />
-    <Compile Include="Processor.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Transmogrifier.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
+  <Import Project="..\common.service.props" />
+  <!-- <ItemGroup>
     <EmbeddedResource Include="Dialects\MsSqlStatements.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>MsSqlStatements.Designer.cs</LastGenOutput>
@@ -93,13 +14,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>PostgreSqlStatements.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  </ItemGroup> -->
+  <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>

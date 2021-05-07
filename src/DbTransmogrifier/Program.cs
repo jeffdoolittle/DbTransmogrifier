@@ -1,5 +1,6 @@
 ﻿using DbTransmogrifier.Logging;
 using DbTransmogrifier.Migrations;
+using System.Data.Common;
 
 namespace DbTransmogrifier
 {
@@ -7,6 +8,8 @@ namespace DbTransmogrifier
     {
         static void Main()
         {
+            DbProviderFactories.RegisterFactory("System.Data.SqlClient", System.Data.SqlClient.SqlClientFactory.Instance);
+
             LogConfigurer.Configure();
 
             var transmogrifier = MigrationConfigurer

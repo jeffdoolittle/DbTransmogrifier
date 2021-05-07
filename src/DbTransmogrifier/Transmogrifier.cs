@@ -216,7 +216,7 @@ namespace DbTransmogrifier
                     command.ExecuteNonQuery();
                     Log.InfoFormat("Database {0} torn down.", _databaseName);
                 }
-                
+
                 transaction.Commit();
             }
 

@@ -10,8 +10,8 @@
 
 namespace DbTransmogrifier.Dialects {
     using System;
-    
-    
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -23,15 +23,15 @@ namespace DbTransmogrifier.Dialects {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class MsSqlStatements {
-        
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal MsSqlStatements() {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
@@ -45,7 +45,7 @@ namespace DbTransmogrifier.Dialects {
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
@@ -59,7 +59,7 @@ namespace DbTransmogrifier.Dialects {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to CREATE DATABASE {0};.
         /// </summary>
@@ -68,7 +68,7 @@ namespace DbTransmogrifier.Dialects {
                 return ResourceManager.GetString("CreateDatabase", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to CREATE TABLE [SchemaVersion] ( [Version] bigint NOT NULL PRIMARY KEY );
         ///INSERT INTO [SchemaVersion] VALUES(0);.
@@ -78,7 +78,7 @@ namespace DbTransmogrifier.Dialects {
                 return ResourceManager.GetString("CreateSchemaVersionTable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to select max([Version]) from [SchemaVersion];.
         /// </summary>
@@ -87,7 +87,7 @@ namespace DbTransmogrifier.Dialects {
                 return ResourceManager.GetString("CurrentVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to SELECT cast(count(*) as bit) FROM sys.databases WHERE [name] = @0;.
         /// </summary>
@@ -96,7 +96,7 @@ namespace DbTransmogrifier.Dialects {
                 return ResourceManager.GetString("DatabaseExists", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to DELETE FROM [SchemaVersion] WHERE [Version] = @0;.
         /// </summary>
@@ -105,11 +105,11 @@ namespace DbTransmogrifier.Dialects {
                 return ResourceManager.GetString("DeleteSchemaVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to DECLARE @kill varchar(8000) = &apos;&apos;;
         ///SELECT @kill = @kill + &apos;kill &apos; + CONVERT(varchar(5), spid) + &apos;;&apos;
-        ///FROM master..sysprocesses 
+        ///FROM master..sysprocesses
         ///WHERE dbid = db_id(&apos;{0}&apos;)
         ///
         ///EXEC(@kill);.
@@ -119,7 +119,7 @@ namespace DbTransmogrifier.Dialects {
                 return ResourceManager.GetString("DropAllConnections", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to DROP DATABASE {0};.
         /// </summary>
@@ -128,7 +128,7 @@ namespace DbTransmogrifier.Dialects {
                 return ResourceManager.GetString("DropDatabase", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to DROP TABLE [SchemaVersion];.
         /// </summary>
@@ -137,7 +137,7 @@ namespace DbTransmogrifier.Dialects {
                 return ResourceManager.GetString("DropSchemaVersionTable", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to INSERT INTO [SchemaVersion] VALUES (@0);.
         /// </summary>
@@ -146,7 +146,7 @@ namespace DbTransmogrifier.Dialects {
                 return ResourceManager.GetString("InsertSchemaVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to SELECT cast(count(*) as bit) FROM sys.tables WHERE [name] = &apos;SchemaVersion&apos;;.
         /// </summary>
@@ -155,23 +155,24 @@ namespace DbTransmogrifier.Dialects {
                 return ResourceManager.GetString("SchemaVersionTableExists", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to DECLARE @name VARCHAR(128)
-        ///DECLARE @constraint VARCHAR(254)
-        ///DECLARE @SqL VARCHAR(254)
+        /// DECLARE @constraint VARCHAR(254)
+        /// DECLARE @SqL VARCHAR(254)
         ///
-        ////* Drop all non-system stored procs */
+        /// /* Drop all non-system stored procs */
         ///
-        ///SELECT @name = (SELECT TOP 1 [name] FROM sysobjects WHERE [type] = &apos;P&apos; AND category = 0 ORDER BY [name])
+        /// SELECT @name = (SELECT TOP 1 [name] FROM sysobjects WHERE [type] = &apos;P&apos; AND category = 0 ORDER BY [name])
         ///
-        ///WHILE @name is not null
-        ///BEGIN
-        ///SELECT @SqL = &apos;DROP PROCEDURE [dbo].[&apos; + RTRIM(@name) +&apos;]&apos;
-        ///EXEC (@SqL)
-        ///PRINT &apos;Dropped Procedure: &apos; + @name
-        ///SELECT @name = (SELECT TOP 1 [name] FROM sysobjects WHERE [type] = &apos;P&apos; AND category = 0 AND [name] &gt; @name ORDER BY [name])
-        ///END        /// [rest of string was truncated]&quot;;.
+        /// WHILE @name is not null
+        /// BEGIN
+        /// SELECT @SqL = &apos;DROP PROCEDURE [dbo].[&apos; + RTRIM(@name) +&apos;]&apos;
+        /// EXEC (@SqL)
+        /// PRINT &apos;Dropped Procedure: &apos; + @name
+        /// SELECT @name = (SELECT TOP 1 [name] FROM sysobjects WHERE [type] = &apos;P&apos; AND category = 0 AND [name] &gt; @name ORDER BY [name])
+        /// END
+        ///  [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string TearDown {
             get {
